@@ -142,11 +142,11 @@ public class PanelConsultaMovimientos extends JPanel implements ActionListener, 
 		JLabel rotuloOperarioFin = new JLabel("Hasta Operario: ", SwingConstants.CENTER);
 		JLabel rotuloFecha1 = new JLabel("Desde Fecha: ", SwingConstants.CENTER);
 		JLabel rotuloFecha2 = new JLabel("Hasta Fecha: ", SwingConstants.CENTER);
-		JLabel rotuloTotal = new JLabel("Total: ", SwingConstants.CENTER);
-		JLabel rotuloTotalProyecto = new JLabel("Total Proyecto: ", SwingConstants.CENTER);
+		JLabel rotuloTotal = new JLabel("Total(€): ", SwingConstants.CENTER);
+		JLabel rotuloTotalProyecto = new JLabel("Total Proyecto(€): ", SwingConstants.CENTER);
 		JLabel rotuloPersonal = new JLabel("Personal ", SwingConstants.CENTER);
 		JLabel rotuloCoef = new JLabel("Coeficientes: ", SwingConstants.CENTER);
-		JLabel rotuloCostes = new JLabel("Costes: ", SwingConstants.CENTER);
+		JLabel rotuloCostes = new JLabel("Costes(€): ", SwingConstants.CENTER);
 		JLabel rotuloHoras = new JLabel("Total Horas: ", SwingConstants.CENTER);
 		JLabel rotuloOficina = new JLabel("Oficina        ", SwingConstants.CENTER);
 		
@@ -478,6 +478,11 @@ public class PanelConsultaMovimientos extends JPanel implements ActionListener, 
 			actualizarTabla();
 		} else
 			new PanelMensaje("Trabajo introducido no encontrado.", "Error en los datos", "error");
+	}
+	
+	public void activarFoco() {
+		textoTrabajo.requestFocus();
+		textoTrabajo.selectAll();
 	}
 
 	public void actualizarTabla() {

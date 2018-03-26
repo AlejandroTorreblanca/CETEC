@@ -283,11 +283,22 @@ public class PanelConsultaProyectos extends JPanel implements ActionListener, Ke
 				}
 			}
 			registro = new LinkedList<>();
+			incluirTotal(n);
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public void incluirTotal(int n){
+		float costes=0,presup=0;;
+		for (int i = 0; i < n-1; i++) {
+			costes+=Float.parseFloat(modelo.getCostesSeleccionado(i).replace(".", "").replace(",", "."));
+			presup+=Float.parseFloat(modelo.getPresupSeleccionado(i).replace(".", "").replace(",", "."));
+		}
+		System.out.println(n);
+		modelo.addFila(n, "0000", "-", "-", "-", "Totales:", presup, costes);
 	}
 	
 	public int añadirLinea(String trabajo, int n) {
@@ -359,6 +370,10 @@ public class PanelConsultaProyectos extends JPanel implements ActionListener, Ke
 			return false;
 		}
 		return true;
+	}
+	
+	public void activarFoco() {
+		fechaChooser1.requestFocusInWindow();
 	}
 
 	@Override

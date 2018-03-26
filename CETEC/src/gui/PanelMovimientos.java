@@ -26,11 +26,13 @@ public class PanelMovimientos extends JPanel implements ActionListener {
 	private JPanel panelCentral;
 	private JButton opeButton;
 	private JButton concepButton;
+	private PanelMovOpe panelOpe;
+	private PanelMovConcep panelConcep;
 	
 	public PanelMovimientos(VentanaPrincipal w) {
 
-		PanelMovOpe panelOpe = new PanelMovOpe(w);
-		PanelMovConcep panelConcep = new PanelMovConcep(w);
+		panelOpe = new PanelMovOpe(w);
+		panelConcep = new PanelMovConcep(w);
 		
 		panelCentral = new JPanel();
 		panelCentral.setLayout(new CardLayout());
@@ -75,7 +77,9 @@ public class PanelMovimientos extends JPanel implements ActionListener {
 		add(panelCentral, BorderLayout.CENTER);
 	}
 
-
+	public void activarFoco() {
+		panelOpe.activarFoco();
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -83,18 +87,16 @@ public class PanelMovimientos extends JPanel implements ActionListener {
 			CardLayout cl=(CardLayout)panelCentral.getLayout();
 			cl.show(panelCentral, "Operario");
 			validate();	
+			panelOpe.activarFoco();
 		}
 		else if (e.getSource() == concepButton) {
 			CardLayout cl=(CardLayout)panelCentral.getLayout();
 			cl.show(panelCentral, "Concepto");
 			validate();	
+			panelConcep.activarFoco();
 		}
 		
 	}
 		
-
-	
-
-	
 	
 }

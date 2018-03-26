@@ -51,7 +51,7 @@ public class PDFConsultaProyectos {
     public void createPDF(PanelConsultaProyectos window) {
     	this.w=window;
         try {
-            Document document = new Document(PageSize.A4);
+            Document document = new Document(PageSize.A4.rotate());
             FileOutputStream archivo;
     		try {
 				archivo = new FileOutputStream("ConsultaProyectos.pdf");
@@ -85,12 +85,12 @@ public class PDFConsultaProyectos {
     				new BaseColor(23, 31, 100))));   
     		SimpleDateFormat d = new SimpleDateFormat("dd/MM/yyyy");
     		document.add(new Paragraph(
-    				"Fechas:  " + d.format(w.getFechaChooser1().getDate()) + " - " + d.format(w.getFechaChooser2().getDate()) + ".", paragraphFont));
+    				"Proyectos con movimientos entre las fechas:  " + d.format(w.getFechaChooser1().getDate()) + " - " + d.format(w.getFechaChooser2().getDate()) + ".", paragraphFont));
     		document.add(new Paragraph("\n\n"));
             
             Integer numColumns = 10;
             PdfPTable table = new PdfPTable(numColumns); 
-            table.setTotalWidth(new float[]{ 15,25,150,25,40,100,60,60,60,45 });
+            table.setTotalWidth(new float[]{ 25,35,160,35,50,110,70,70,70,55 });
             table.setLockedWidth(true);
             PdfPCell columnHeader;
             

@@ -1,2 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<qualifiedTypeNameHistroy/>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="java.awt.event.WindowAdapter"/>
+<fullyQualifiedTypeName name="java.awt.event.WindowEvent"/>
+<fullyQualifiedTypeName name="gui.PanelOperarios"/>
+<fullyQualifiedTypeName name="org.apache.poi.hssf.record.TextObjectRecord"/>
+<fullyQualifiedTypeName name="gui.PanelMensaje"/>
+</qualifiedTypeNameHistroy>

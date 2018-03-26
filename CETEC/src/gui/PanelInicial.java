@@ -68,7 +68,7 @@ public class PanelInicial extends JPanel implements ActionListener{
 		JPanel pOeste = new JPanel();
 		JPanel pCentral = new JPanel();
 		
-		JLabel rotuloSuperior = new JLabel("MENU DE OPCIONES", SwingConstants.CENTER);
+		JLabel rotuloSuperior = new JLabel("PROGRAMA DE CONTROL DE COSTES", SwingConstants.CENTER);
 		Font font = new Font("Calibri", Font.BOLD, 40);
 		rotuloSuperior.setFont(font);
 		pNorte.setAlignmentX(Component.CENTER_ALIGNMENT);

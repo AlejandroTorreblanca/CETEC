@@ -45,6 +45,7 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 	private Controlador controlador;
 	private JButton confirmarButton;
 	private JButton cancelarButton;
+	private JButton borrarButton;
 	private JTextField textoOperario;
 	private JDateChooser fechaChooser1;
 	private JDateChooser fechaChooser2;
@@ -101,56 +102,85 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 		xNombreTrabajo = new JTextField("");
 		xNombreTrabajo.setEditable(false);
 		fixedSize(xNombreTrabajo, 400, 30);
-		
-		textoOperario.getDocument().addDocumentListener(new DocumentListener() {
-			  public void changedUpdate(DocumentEvent e) {
-				    warn();
-				  }
-				  public void removeUpdate(DocumentEvent e) {
-				    warn();
-				  }
-				  public void insertUpdate(DocumentEvent e) {
-				    warn();
-				  }
 
-				  public void warn() {
-				     if(textoOperario.getText().length()==4){
-				    	inicializarDatos();
-				    	if(fechaChooser2.getDate()!=null && fechaChooser1.getDate()!=null) {
-				    		vaciarTabla();
-				    		actualizarTabla();
-				    	}
-				     }
-				  }
-				});
-		
-		fechaChooser1.getDateEditor().addPropertyChangeListener(
-			    new PropertyChangeListener() {
-					@Override
-					public void propertyChange(PropertyChangeEvent e) {
-						if ("date".equals(e.getPropertyName())) {
-							if(fechaChooser2.getDate()!=null ){
-								vaciarTabla();
-						     	actualizarTabla();
-						     	
-					        }
-			            }
-						
+		textoOperario.getDocument().addDocumentListener(new DocumentListener() {
+			public void changedUpdate(DocumentEvent e) {
+				warn();
+			}
+
+			public void removeUpdate(DocumentEvent e) {
+				warn();
+			}
+
+			public void insertUpdate(DocumentEvent e) {
+				warn();
+			}
+
+			public void warn() {
+				if (textoOperario.getText().length() == 4) {
+					inicializarDatos();
+					if (fechaChooser2.getDate() != null && fechaChooser1.getDate() != null) {
+						vaciarTabla();
+						actualizarTabla();
 					}
-			    });
-		fechaChooser2.getDateEditor().addPropertyChangeListener(
-			    new PropertyChangeListener() {
-					@Override
-					public void propertyChange(PropertyChangeEvent e) {
-						if ("date".equals(e.getPropertyName())) {
-							if(fechaChooser2.getDate()!=null){
-								vaciarTabla();
-						     	actualizarTabla();
-					        }
-			            }
-						
+				}
+			}
+		});
+		textoOperario.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					Date fecha = fechaChooser1.getDate();
+					SimpleDateFormat d = new SimpleDateFormat("dd/MM/yyyy");
+					if (fecha == null) {
+						fecha = new Date();
+						String fechaaux = d.format(fecha);
+						try {
+							fechaChooser1.setDate(d.parse(fechaaux));
+						} catch (ParseException e1) {
+							new PanelMensaje("Error al cargar los datos", "Error", "error");
+							e1.printStackTrace();
+						}
 					}
-			    });
+					fechaChooser1.requestFocusInWindow();
+				}
+			}
+		});
+
+		fechaChooser1.getDateEditor().addPropertyChangeListener(new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent e) {
+				if ("date".equals(e.getPropertyName())) {
+					if (fechaChooser2.getDate() != null) {
+						vaciarTabla();
+						actualizarTabla();
+
+					}
+				}
+
+			}
+		});
+		fechaChooser2.getDateEditor().addPropertyChangeListener(new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent e) {
+				if ("date".equals(e.getPropertyName())) {
+					if (fechaChooser2.getDate() != null) {
+						vaciarTabla();
+						actualizarTabla();
+					}
+				}
+
+			}
+		});
 
 		xMov.addMouseListener(new MouseAdapter() {
 			@Override
@@ -176,24 +206,6 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 			}
 		});
 
-		xHoras.addKeyListener(new KeyListener() {
-
-			@Override
-			public void keyTyped(KeyEvent e) {
-			}
-
-			@Override
-			public void keyReleased(KeyEvent e) {
-			}
-
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					confirmarButton.doClick();
-				}
-			}
-		});
-
 		xTraba.getDocument().addDocumentListener(new DocumentListener() {
 			public void changedUpdate(DocumentEvent e) {
 				warn();
@@ -212,8 +224,6 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 					int res = buscarNombres();
 					if (res == -2)
 						new PanelMensaje("Trabajo introducido no encontrado.", "Error en los datos", "error");
-					else if (res == -1)
-						new PanelMensaje("Operario introducido no encontrado.", "Error en los datos", "error");
 				}
 			}
 		});
@@ -232,23 +242,8 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					Date fecha = fechaChooser1.getDate();
 					SimpleDateFormat d = new SimpleDateFormat("dd/MM/yyyy");
-					if (fecha == null) {
-						fecha = new Date();
-						Calendar calendar = Calendar.getInstance();
-						calendar.setTime(fecha);
-						calendar.add(Calendar.DAY_OF_YEAR, -1);
-						String fechaaux = d.format(calendar.getTime());
-						try {
-							fechaChooser1.setDate(d.parse(fechaaux));
-						} catch (ParseException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-					}
-
-					fecha = fechaChooser2.getDate();
+					Date fecha = fechaChooser2.getDate();
 					if (fecha == null) {
 						fecha = new Date();
 						String fechaaux = d.format(fecha);
@@ -259,9 +254,7 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 							e1.printStackTrace();
 						}
 					}
-					buscarNombres();
-					vaciarTabla();
-					actualizarTabla();
+					fechaChooser2.requestFocusInWindow();
 				}
 			}
 		});
@@ -280,23 +273,8 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					Date fecha = fechaChooser1.getDate();
+					Date fecha = fechaChooser2.getDate();
 					SimpleDateFormat d = new SimpleDateFormat("dd/MM/yyyy");
-					if (fecha == null) {
-						fecha = new Date();
-						Calendar calendar = Calendar.getInstance();
-						calendar.setTime(fecha);
-						calendar.add(Calendar.DAY_OF_YEAR, -1);
-						String fechaaux = d.format(calendar.getTime());
-						try {
-							fechaChooser1.setDate(d.parse(fechaaux));
-						} catch (ParseException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-					}
-
-					fecha = fechaChooser2.getDate();
 					if (fecha == null) {
 						fecha = new Date();
 						String fechaaux = d.format(fecha);
@@ -310,6 +288,69 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 					buscarNombres();
 					vaciarTabla();
 					actualizarTabla();
+					xTraba.requestFocus();
+					xTraba.selectAll();
+				}
+			}
+		});
+
+		xTraba.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					xFecha.requestFocusInWindow();
+				}
+			}
+		});
+
+		xFecha.getDateEditor().getUiComponent().addKeyListener(new java.awt.event.KeyListener() {
+			@Override
+			public void keyTyped(java.awt.event.KeyEvent e) {
+
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					if (xHoras.getText().isEmpty()) {
+						xHoras.setText("1");
+						xHoras.requestFocus();
+						xHoras.selectAll();
+					}
+				}
+			}
+		});
+
+		xHoras.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					confirmarButton.doClick();
+					textoOperario.requestFocus();
+					textoOperario.selectAll();
 				}
 			}
 		});
@@ -346,6 +387,9 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 		cancelarButton = new JButton("Volver");
 		cancelarButton.setMargin(new Insets(2, 28, 2, 28));
 		cancelarButton.addActionListener(this);
+		borrarButton = new JButton("Limpiar");
+		borrarButton.setMargin(new Insets(2, 28, 2, 28));
+		borrarButton.addActionListener(this);
 
 		JPanel panel1 = new JPanel();
 		JPanel panel2 = new JPanel();
@@ -385,6 +429,8 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 		panel6.setLayout(new BoxLayout(panel6, BoxLayout.X_AXIS));
 		panel6.setAlignmentX(RIGHT_ALIGNMENT);
 		panel6.add(Box.createRigidArea(new Dimension(160, 15)));
+		panel6.add(borrarButton);
+		panel6.add(Box.createRigidArea(new Dimension(50, 15)));
 		panel6.add(confirmarButton);
 		panel6.add(Box.createRigidArea(new Dimension(50, 15)));
 		panel6.add(cancelarButton);
@@ -452,35 +498,30 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 			xHoras.setText(Integer.toString(horas));
 		}
 	}
-	
-	public int buscarNombres(){
+
+	public int buscarNombres() {
 		String nombre = buscarTrabajador(textoOperario.getText());
 		if (nombre.isEmpty()) {
 			return -1;
-		}
-		else
-		{
+		} else {
 			xNombre.setText(nombre);
 			textoNombre.setText(nombre);
 		}
-		
-		if (!xTraba.getText().isEmpty())
-		{
+
+		if (!xTraba.getText().isEmpty()) {
 			String trabajo = buscarTrabajo(xTraba.getText());
-			if(trabajo.isEmpty())
-			{
+			if (trabajo.isEmpty()) {
 				return -2;
-			}
-			else
+			} else
 				xNombreTrabajo.setText(trabajo);
 		}
-		
+
 		return 0;
 	}
 
 	public void inicializarDatos() {
-		int res=buscarNombres();
-		if (res!=-1) {
+		int res = buscarNombres();
+		if (res != -1) {
 			movMax = controlador.getIdentificadorMOV();
 			xMov.setText(Integer.toString(movMax));
 			Date fecha = new Date();
@@ -493,10 +534,9 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 				e.printStackTrace();
 			}
 
-		} 
-		else
+		} else
 			new PanelMensaje("Operario introducido no encontrado.", "Error en los datos", "error");
-			
+
 	}
 
 	public void actualizarTabla() {
@@ -528,7 +568,12 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 			}
 	}
 
-	public int guardarCambios() {
+	public void activarFoco() {
+		textoOperario.requestFocus();
+		textoOperario.selectAll();
+	}
+
+	public boolean guardarCambios() {
 		// Guardamos en operarios
 		String str = "MOVIMIENTO='" + xMov.getText() + "'";
 
@@ -551,15 +596,18 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 								controlador.setStatementUpdate("CTCMOV", str1, str, d.parse(fecha));
 							} catch (ParseException e) {
 								e.printStackTrace();
+								return false;
 							}
-						else
+						else {
 							new PanelMensaje("La fecha introducida no es válida ", "Error en los datos", "error");
+							return false;
+						}
 					} else {
 						Calendar calendar = Calendar.getInstance();
 						calendar.setTime(new Date());
 						new PanelMensaje("El usuario introducido no tiene asignado un precio para el año "
 								+ Integer.toString(calendar.get(Calendar.YEAR)), "Error en los datos", "error");
-						return -1;
+						return false;
 					}
 				} else { // Insert
 					if (precio != -1) {
@@ -575,25 +623,28 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 								controlador.setStatementInsert("CTCMOV", str1, str2, d.parse(fecha));
 							} catch (ParseException e) {
 								e.printStackTrace();
+								return false;
 							}
-						else
+						else {
 							new PanelMensaje("La fecha introducida no es válida ", "Error en los datos", "error");
+							return false;
+						}
 
 					} else {
 						Calendar calendar = Calendar.getInstance();
 						calendar.setTime(new Date());
 						new PanelMensaje("El usuario introducido no tiene asignado un precio para el año "
 								+ Integer.toString(calendar.get(Calendar.YEAR)), "Error en los datos", "error");
-						return -1;
+						return false;
 					}
 				}
 
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				return -1;
+				return false;
 			}
-		return 0;
+		return true;
 	}
 
 	public boolean comprobarDatos(String operario, String trabajo, Date fecha, String horas) {
@@ -647,34 +698,51 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == confirmarButton) {
 			if (comprobarDatos(textoOperario.getText(), xTraba.getText(), xFecha.getDate(), xHoras.getText())) {
-				int n = guardarCambios();
-				if (n != -1 && (!(fechaChooser1.getDate() == null) && !(fechaChooser2.getDate() == null))) {
-					if (modelo.getRowCount() > 0) {
-						vaciarTabla();
-						actualizarTabla();
-					} else {
+				if (guardarCambios())
+				{
+					if ((!(fechaChooser1.getDate() == null) && !(fechaChooser2.getDate() == null))) {
+						if (modelo.getRowCount() > 0) {
+							vaciarTabla();
+							actualizarTabla();
+						} else {
+							SimpleDateFormat d = new SimpleDateFormat("dd/MM/yyyy");
+							vaciarTabla();
+							modelo.addFila(xMov.getText(), xTraba.getText(), d.format(xFecha.getDate()),
+									textoNombre.getText(), Integer.parseInt(xHoras.getText()));
+						}
+						xMov.setText(Integer.toString(controlador.getIdentificadorMOV()));
+						xTraba.setText("");
+						xNombreTrabajo.setText("");
+						xHoras.setText("");
+						Date fecha = new Date();
 						SimpleDateFormat d = new SimpleDateFormat("dd/MM/yyyy");
-						vaciarTabla();
-						modelo.addFila(xMov.getText(), xTraba.getText(), d.format(xFecha.getDate()),
-								textoNombre.getText(), Integer.parseInt(xHoras.getText()));
-					}
-					xMov.setText(Integer.toString(controlador.getIdentificadorMOV()));
-					xTraba.setText("");
-					xNombreTrabajo.setText("");
-					xHoras.setText("");
-					Date fecha = new Date();
-					SimpleDateFormat d = new SimpleDateFormat("dd/MM/yyyy");
-					String fechaaux = d.format(fecha);
-					try {
-						xFecha.setDate(d.parse(fechaaux));
-					} catch (ParseException e2) {
-						// TODO Auto-generated catch block
-						e2.printStackTrace();
+						String fechaaux = d.format(fecha);
+						try {
+							xFecha.setDate(d.parse(fechaaux));
+						} catch (ParseException e2) {
+							// TODO Auto-generated catch block
+							e2.printStackTrace();
+						}
 					}
 				}
+				else
+					new PanelMensaje("Error al guardar los datos", "Error", "error");
 			}
 		} else if (e.getSource() == cancelarButton) {
 			window.setPanelInicial();
+		} else if (e.getSource() == borrarButton) {
+			vaciarTabla();
+			textoNombre.setText("");
+			textoOperario.setText("");
+			textoOperario.requestFocus();
+			fechaChooser1.setDate(null);
+			fechaChooser2.setDate(null);
+			xFecha.setDate(null);
+			xMov.setText("");
+			xHoras.setText("");
+			xNombre.setText("");
+			xTraba.setText("");
+			xNombreTrabajo.setText("");
 		}
 
 	}

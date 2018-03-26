@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename local variable &apos;operario&apos; in &apos;gui.PanelTrabajos.comprobarDatos(...)&apos; to &apos;trabajo&apos;&#x0D;&#x0A;- Original project: &apos;CETEC&apos;&#x0D;&#x0A;- Original element: &apos;gui.PanelTrabajos.comprobarDatos(String).operario&apos;&#x0D;&#x0A;- Renamed element: &apos;operario&apos;&#x0D;&#x0A;- Update references to refactored element" description="Rename local variable &apos;operario&apos;" id="org.eclipse.jdt.ui.rename.local.variable" input="/src&lt;gui{PanelTrabajos.java[PanelTrabajos~comprobarDatos~QString;@operario!11820!11834!11827!11834!QString;!0!true" name="trabajo" references="true" stamp="1521738513390" version="1.0"/>
+</session>

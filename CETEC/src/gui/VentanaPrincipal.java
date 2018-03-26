@@ -53,20 +53,6 @@ public class VentanaPrincipal extends JFrame {
 		add(Box.createRigidArea(new Dimension(100, 100)));
 		add(panelCentral);
 		
-//		JPanel p0 = new JPanel();
-//		p0.add(Box.createRigidArea(new Dimension(50, 50)));
-//		add(p0, BorderLayout.NORTH);
-//		JPanel p1 = new JPanel();
-//		p1.add(Box.createRigidArea(new Dimension(100, 100)));
-//		add(p1, BorderLayout.WEST);
-//		add(panelCentral,BorderLayout.CENTER);
-//		JPanel p2 = new JPanel();
-//		p2.add(Box.createRigidArea(new Dimension(100, 100)));
-//		add(p2, BorderLayout.EAST);
-//		JPanel p3 = new JPanel();
-//		p3.add(Box.createRigidArea(new Dimension(50, 50)));
-//		add(p3, BorderLayout.SOUTH);
-		
 	}
 	
 	public void setPanelInicial(){
@@ -79,12 +65,14 @@ public class VentanaPrincipal extends JFrame {
 		CardLayout cl=(CardLayout)panelCentral.getLayout();
 		cl.show(panelCentral, "Operarios");
 		validate();	
+		panelOperarios.activarFoco();
 	}
 	
 	public void setPanelTrabajos(){
 		CardLayout cl=(CardLayout)panelCentral.getLayout();
 		cl.show(panelCentral, "Trabajos");
 		validate();	
+		panelTrabajos.activarFoco();
 	}
 	
 	public void setPanelCoeficientes(){
@@ -103,18 +91,21 @@ public class VentanaPrincipal extends JFrame {
 		CardLayout cl=(CardLayout)panelCentral.getLayout();
 		cl.show(panelCentral, "Movimientos");
 		validate();	
+		panelMovimientos.activarFoco();
 	}
 	
 	public void setPanelConsultaMovimientos(){
 		CardLayout cl=(CardLayout)panelCentral.getLayout();
 		cl.show(panelCentral, "ConsultaMovimientos");
 		validate();	
+		panelConsultaMovimientos.activarFoco();
 	}
 	
 	public void setPanelConsultaProyectos(){
 		CardLayout cl=(CardLayout)panelCentral.getLayout();
 		cl.show(panelCentral, "ConsultaProyectos");
 		validate();	
+		panelConsultaProyectos.activarFoco();
 	}
 	
 

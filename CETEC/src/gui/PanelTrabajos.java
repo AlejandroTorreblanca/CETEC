@@ -8,11 +8,14 @@ import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -82,7 +85,7 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 		textoCodigo = new JTextField();
 		fixedSize(textoCodigo, 50, 24);
 		textoCodigo.setText(format.format(controlador.getIdentificadorTRB()));
-		comboClave = new  JComboBox<>();
+		comboClave = new JComboBox<>();
 		fixedSize(comboClave, 50, 24);
 		comboClave.setSelectedIndex(-1);
 		comboClave.setEditable(false);
@@ -137,47 +140,283 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 		textoObs.setLineWrap(true);
 
 		textoCodigo.getDocument().addDocumentListener(new DocumentListener() {
-			  public void changedUpdate(DocumentEvent e) {
-				    warn();
-				  }
-				  public void removeUpdate(DocumentEvent e) {
-				    warn();
-				  }
-				  public void insertUpdate(DocumentEvent e) {
-				    warn();
-				  }
+			public void changedUpdate(DocumentEvent e) {
+				warn();
+			}
 
-				  public void warn() {
-				     if(textoCodigo.getText().length()==4)
-				    	 actualizarPlantilla();
-				  }
-				});
+			public void removeUpdate(DocumentEvent e) {
+				warn();
+			}
+
+			public void insertUpdate(DocumentEvent e) {
+				warn();
+			}
+
+			public void warn() {
+				if (textoCodigo.getText().length() == 4)
+					actualizarPlantilla();
+			}
+		});
+
+		textoCodigo.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					comboClave.requestFocusInWindow();
+					comboClave.showPopup();
+				}
+			}
+		});
 		
-		textoTrabajador.getDocument().addDocumentListener(new DocumentListener() {
-			  public void changedUpdate(DocumentEvent e) {
-				    warn();
-				  }
-				  public void removeUpdate(DocumentEvent e) {
-				    warn();
-				  }
-				  public void insertUpdate(DocumentEvent e) {
-				    warn();
-				  }
+		comboClave.addKeyListener(new KeyListener() {
 
-				  public void warn() {
-				     if(textoTrabajador.getText().length()==4){
-				    	 if(isNumeric(textoTrabajador.getText())){
-								String operario=buscarTrabajador(textoTrabajador.getText());
-								if(operario.isEmpty())
-									new PanelMensaje("El operario seleccionado no está registrado.", "Error en los datos", "error");
-								else
-									textoNombre.setText(operario);
-							}
-							else
-								new PanelMensaje("El código del operario debe ser numérico.", "Error en los datos", "error");
-								
-				  }}
-				});
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					if(fechaChooser1.getDate()==null)
+						fechaChooser1.setDate(new Date());
+					fechaChooser1.requestFocusInWindow();
+				}
+			}
+		});
+
+		fechaChooser1.getDateEditor().getUiComponent().addKeyListener(new java.awt.event.KeyListener() {
+			@Override
+			public void keyTyped(java.awt.event.KeyEvent e) {
+
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					textoDeno.requestFocus();
+					textoDeno.selectAll();
+				}
+			}
+		});
+
+		textoDeno.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					textoDescrip.requestFocus();
+					textoDescrip.selectAll();
+				}
+			}
+		});
+
+		textoDescrip.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					textoCliente.requestFocus();
+					textoCliente.selectAll();
+				}
+			}
+		});
+
+		
+
+		textoCliente.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					textoTrabajador.requestFocus();
+					textoTrabajador.selectAll();
+				}
+			}
+		});
+
+		textoTrabajador.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					comboEstatus.requestFocusInWindow();
+					comboEstatus.showPopup();
+				}
+			}
+		});
+		
+		comboEstatus.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					textoPresup.requestFocus();
+					textoPresup.selectAll();
+				}
+			}
+		});
+
+		textoPresup.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					comboCob.requestFocusInWindow();
+					comboCob.showPopup();
+				}
+			}
+		});
+		
+		comboCob.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					comboFra.requestFocusInWindow();
+					comboFra.showPopup();
+				}
+			}
+		});
+		
+		comboFra.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					textoObs.requestFocus();
+					textoObs.selectAll();
+				}
+			}
+		});
+
+		textoObs.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					confirmarButton.doClick();
+				}
+			}
+		});
+
+		textoTrabajador.getDocument().addDocumentListener(new DocumentListener() {
+			public void changedUpdate(DocumentEvent e) {
+				warn();
+			}
+
+			public void removeUpdate(DocumentEvent e) {
+				warn();
+			}
+
+			public void insertUpdate(DocumentEvent e) {
+				warn();
+			}
+
+			public void warn() {
+				if (textoTrabajador.getText().length() == 4) {
+					if (isNumeric(textoTrabajador.getText())) {
+						String operario = buscarTrabajador(textoTrabajador.getText());
+						if (operario.isEmpty())
+							new PanelMensaje("El operario seleccionado no está registrado.", "Error en los datos",
+									"error");
+						else
+							textoNombre.setText(operario);
+					} else
+						new PanelMensaje("El código del operario debe ser numérico.", "Error en los datos", "error");
+
+				}
+			}
+		});
 
 		confirmarButton = new JButton("Confirmar");
 		confirmarButton.setMargin(new Insets(2, 28, 2, 28));
@@ -190,7 +429,7 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 		JScrollPane scrollObs = new JScrollPane(textoObs);
 		scrollObs.setMaximumSize(new Dimension(500, 500));
 		scrollDesc.setMaximumSize(new Dimension(500, 500));
-		
+
 		JPanel panelCentral = new JPanel();
 		JPanel panel1 = new JPanel();
 		JPanel panel2 = new JPanel();
@@ -307,11 +546,11 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 
 		setLayout(new BorderLayout(10, 10));
 		add(pNorte, BorderLayout.NORTH);
-		
-		JLabel imagen=new JLabel();
+
+		JLabel imagen = new JLabel();
 		imagen.setMaximumSize(new Dimension(80, 74));
-		String nombre="Iconos/logoMini.jpg";
-		String nombre_im=System.getProperty("user.dir")+"\\"+nombre;
+		String nombre = "Iconos/logoMini.jpg";
+		String nombre_im = System.getProperty("user.dir") + "\\" + nombre;
 		imagen.setIcon(new ImageIcon(nombre_im));
 		pOeste.setLayout(new BoxLayout(pOeste, BoxLayout.Y_AXIS));
 		pOeste.setAlignmentY(Component.LEFT_ALIGNMENT);
@@ -328,63 +567,89 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 		add(pSur, BorderLayout.SOUTH);
 	}
 
-	public void guardarCambios() {
-		String str = "NRO_TRABAJO='" + textoCodigo.getText() + "'";
-		try {
-			SimpleDateFormat d = new SimpleDateFormat("dd/MM/yyyy");
-			ResultSet rs = controlador.setStatementSelect("CTCTRB", str);
-			if (rs.first()) { // Update
-				String str1 = "CLAVE_TRABAJO='" + comboClave.getSelectedItem() + "',FECHA_CONTRATO=?,DENOMINACION='"
-						+ textoDeno.getText() + "',DESCRIPCION='" + textoDescrip.getText() + "',CLIENTE='"
-						+ textoCliente.getText() + "',TRABAJADOR='" + textoTrabajador.getText() + "',PRESUPUESTO='"
-						+ textoPresup.getText().replace(",", ".") + "',FACTURADO='" + comboFra.getSelectedItem() + "',COBRADO='"
-						+ comboCob.getSelectedItem() + "',OBSERVACIONES='" + textoObs.getText() + "',ESTATUS='" + comboEstatus.getSelectedItem() + "'";
-				String str2 = "NRO_TRABAJO='" + textoCodigo.getText() + "'";
-				if (fechaChooser1.getDate() != null)
-					try {
-						String fecha = d.format(fechaChooser1.getDate());
-						if (validarFecha(fecha)) {
-							System.out.println(fecha);
-							controlador.setStatementUpdate("CTCTRB", str1, str2, d.parse(fecha));
-							new PanelMensaje("Cambios guardados con éxito.", "Confirmación de cambios", "info");
-						} else {
-							new PanelMensaje("La fecha introducida no es válida ", "Error en los datos", "error");
-						}
-					} catch (ParseException e) {
-						new PanelMensaje("Error.", "Error de guardado", "error");
-						e.printStackTrace();
-					}
-				else
-					new PanelMensaje("La fecha introducida no es válida ", "Error en los datos", "error");
-			} else { // Insert
-				String str1 = "(NRO_TRABAJO,CLAVE_TRABAJO,FECHA_CONTRATO,DENOMINACION,DESCRIPCION,CLIENTE,"
-						+ "TRABAJADOR,PRESUPUESTO,FACTURADO,COBRADO,OBSERVACIONES,ESTATUS)";
-				String str2 = "('" + textoCodigo.getText() + "','" + comboClave.getSelectedItem() + "', ? ,'"
-						+ textoDeno.getText() + "','" + textoDescrip.getText() + "','" + textoCliente.getText() + "','"
-						+ textoTrabajador.getText() + "','"
-						+ textoPresup.getText().replace(",", ".") + "','" + comboFra.getSelectedItem() + "','"
-						+ comboCob.getSelectedItem() + "','" + textoObs.getText() + "','"+ comboEstatus.getSelectedItem() +"')";
-				if (fechaChooser1.getDate() != null)
-					try {
-						String fecha = d.format(fechaChooser1.getDate());
-						if (validarFecha(fecha)) {
-							controlador.setStatementInsert("CTCTRB", str1, str2, d.parse(fecha));
-							new PanelMensaje("Cambios guardados con éxito.", "Confirmación de cambios", "info");
-						} else {
-							new PanelMensaje("La fecha introducida no es válida ", "Error en los datos", "error");
-						}
-					} catch (ParseException e) {
-						new PanelMensaje("Error al guardar los datos.", "Error de guardado", "error");
-						e.printStackTrace();
-					}
-				else
-					new PanelMensaje("La fecha introducida no es válida ", "Error en los datos", "error");
-				
-			}
-		} catch (SQLException e) {
-			new PanelMensaje("Error al guardar los datos.", "Error", "error");
-			e.printStackTrace();
+	public boolean comprobarDatos(String trabajo) {
+		if (trabajo.isEmpty() || !isNumeric(trabajo)) {
+			new PanelMensaje("Código de trabajo no válido.", "Error en los datos", "error");
+			return false;
 		}
+		if (trabajo.length() != 4) {
+			new PanelMensaje("El código de operario debe ser de cuatro caracteres.", "Error en los datos", "error");
+			return false;
+		}
+		return true;
+	}
+
+	public boolean guardarCambios() {
+		String str = "NRO_TRABAJO='" + textoCodigo.getText() + "'";
+		if (comprobarDatos(textoCodigo.getText()))
+			try {
+				SimpleDateFormat d = new SimpleDateFormat("dd/MM/yyyy");
+				ResultSet rs = controlador.setStatementSelect("CTCTRB", str);
+				if (rs.first()) { // Update
+					String str1 = "CLAVE_TRABAJO='" + comboClave.getSelectedItem() + "',FECHA_CONTRATO=?,DENOMINACION='"
+							+ textoDeno.getText() + "',DESCRIPCION='" + textoDescrip.getText() + "',CLIENTE='"
+							+ textoCliente.getText() + "',TRABAJADOR='" + textoTrabajador.getText() + "',PRESUPUESTO='"
+							+ textoPresup.getText().replace(",", ".") + "',FACTURADO='" + comboFra.getSelectedItem()
+							+ "',COBRADO='" + comboCob.getSelectedItem() + "',OBSERVACIONES='" + textoObs.getText()
+							+ "',ESTATUS='" + comboEstatus.getSelectedItem() + "'";
+					String str2 = "NRO_TRABAJO='" + textoCodigo.getText() + "'";
+					if (fechaChooser1.getDate() != null)
+						try {
+							String fecha = d.format(fechaChooser1.getDate());
+							if (validarFecha(fecha)) {
+								System.out.println(fecha);
+								controlador.setStatementUpdate("CTCTRB", str1, str2, d.parse(fecha));
+								new PanelMensaje("Cambios guardados con éxito.", "Confirmación de cambios", "info");
+								return true;
+							} else {
+								new PanelMensaje("La fecha introducida no es válida ", "Error en los datos", "error");
+								return false;
+							}
+						} catch (ParseException e) {
+							new PanelMensaje("Error.", "Error de guardado", "error");
+							e.printStackTrace();
+							return false;
+						}
+					else {
+						new PanelMensaje("La fecha introducida no es válida ", "Error en los datos", "error");
+						return false;
+					}
+				} else { // Insert
+					String str1 = "(NRO_TRABAJO,CLAVE_TRABAJO,FECHA_CONTRATO,DENOMINACION,DESCRIPCION,CLIENTE,"
+							+ "TRABAJADOR,PRESUPUESTO,FACTURADO,COBRADO,OBSERVACIONES,ESTATUS)";
+					String str2 = "('" + textoCodigo.getText() + "','" + comboClave.getSelectedItem() + "', ? ,'"
+							+ textoDeno.getText() + "','" + textoDescrip.getText() + "','" + textoCliente.getText()
+							+ "','" + textoTrabajador.getText() + "','" + textoPresup.getText().replace(",", ".")
+							+ "','" + comboFra.getSelectedItem() + "','" + comboCob.getSelectedItem() + "','"
+							+ textoObs.getText() + "','" + comboEstatus.getSelectedItem() + "')";
+					if (fechaChooser1.getDate() != null)
+						try {
+							String fecha = d.format(fechaChooser1.getDate());
+							if (validarFecha(fecha)) {
+								controlador.setStatementInsert("CTCTRB", str1, str2, d.parse(fecha));
+								new PanelMensaje("Cambios guardados con éxito.", "Confirmación de cambios", "info");
+								return true;
+							} else {
+								new PanelMensaje("La fecha introducida no es válida ", "Error en los datos", "error");
+								return false;
+							}
+						} catch (ParseException e) {
+							new PanelMensaje("Error al guardar los datos.", "Error de guardado", "error");
+							e.printStackTrace();
+							return false;
+						}
+					else {
+						new PanelMensaje("La fecha introducida no es válida ", "Error en los datos", "error");
+						return false;
+					}
+
+				}
+			} catch (SQLException e) {
+				new PanelMensaje("Error al guardar los datos.", "Error", "error");
+				e.printStackTrace();
+				return false;
+			}
+		return true;
 	}
 
 	public void actualizarPlantilla() {
@@ -425,22 +690,25 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 				new PanelMensaje("Error al actualizar los datos.", "Error", "error");
 				e.printStackTrace();
 			}
-		}
-		else
+		} else
 			new PanelMensaje("El código del trabajo debe ser numérico.", "Error en los datos", "error");
 	}
-	
-	public static boolean validarFecha(String fecha) {
-        try {
-            SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
-            formatoFecha.setLenient(false);
-            formatoFecha.parse(fecha);
-        } catch (ParseException e) {
-            return false;
-        }
-        return true;
-    }
 
+	public static boolean validarFecha(String fecha) {
+		try {
+			SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
+			formatoFecha.setLenient(false);
+			formatoFecha.parse(fecha);
+		} catch (ParseException e) {
+			return false;
+		}
+		return true;
+	}
+
+	public void activarFoco() {
+		textoCodigo.requestFocus();
+		textoCodigo.selectAll();
+	}
 
 	public String buscarTrabajador(String codigo) {
 		String str = "OPERARIO='" + codigo + "'";
@@ -454,26 +722,43 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 		}
 		return "";
 	}
-	
+
 	public boolean isNumeric(String cadena) {
-        try {
-            Float.parseFloat(cadena);
-            return true;
-        } catch (NumberFormatException excepcion) {
-            return false;
-        }
-    }
+		try {
+			Float.parseFloat(cadena);
+			return true;
+		} catch (NumberFormatException excepcion) {
+			return false;
+		}
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == confirmarButton) {
 
 			String nombre = buscarTrabajador(textoTrabajador.getText());
-			if (nombre.compareTo("") == 0)
+			if (nombre.isEmpty())
 				new PanelMensaje("El operario introducido no ha sido registrado.", "Error en los datos", "error");
 			else {
 				textoNombre.setText(nombre);
-				guardarCambios();
+				if(guardarCambios()){
+					DecimalFormat format = new DecimalFormat("0000");
+					textoCodigo.setText(format.format(controlador.getIdentificadorTRB()));
+					textoCodigo.requestFocus();
+					textoCodigo.selectAll();
+					comboClave.setSelectedItem("");
+					comboCob.setSelectedItem("");
+					comboEstatus.setSelectedItem("");
+					comboFra.setSelectedItem("");
+					fechaChooser1.setCalendar(null);
+					textoDeno.setText("");
+					textoDescrip.setText("");
+					textoCliente.setText("");
+					textoTrabajador.setText("");
+					textoNombre.setText("");
+					textoPresup.setText("");
+					textoObs.setText("");
+				}
 			}
 
 		} else if (e.getSource() == cancelarButton) {

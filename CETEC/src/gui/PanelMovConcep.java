@@ -43,6 +43,7 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 
 	private VentanaPrincipal window;
 	private Controlador controlador;
+	private JButton borrarButton;
 	private JButton confirmarButton;
 	private JButton cancelarButton;
 	private JTextField textoOperario;
@@ -152,6 +153,36 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 				}
 			}
 		});
+		
+		textoOperario.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					Date fecha = fechaChooser1.getDate();
+					SimpleDateFormat d = new SimpleDateFormat("dd/MM/yyyy");
+					if (fecha == null) {
+						fecha = new Date();
+						String fechaaux = d.format(fecha);
+						try {
+							fechaChooser1.setDate(d.parse(fechaaux));
+						} catch (ParseException e1) {
+							new PanelMensaje("Error al cargar los datos", "Error", "error");
+							e1.printStackTrace();
+						}
+					}
+					fechaChooser1.requestFocusInWindow();
+				}
+			}
+		});
 
 		fechaChooser1.getDateEditor().addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
@@ -178,24 +209,8 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 
 			}
 		});
-		xCant.addKeyListener(new KeyListener() {
 
-			@Override
-			public void keyTyped(KeyEvent e) {
-			}
-
-			@Override
-			public void keyReleased(KeyEvent e) {
-			}
-
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					buscarNombres();
-					confirmarButton.doClick();
-				}
-			}
-		});
+		
 		xConcep.getDocument().addDocumentListener(new DocumentListener() {
 			public void changedUpdate(DocumentEvent e) {
 				warn();
@@ -236,8 +251,7 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 					int res = buscarNombres();
 					if (res == -2)
 						new PanelMensaje("Trabajo introducido no encontrado.", "Error en los datos", "error");
-					else if (res == -1)
-						new PanelMensaje("Operario introducido no encontrado.", "Error en los datos", "error");
+					
 				}
 			}
 		});
@@ -256,24 +270,8 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					buscarNombres();
-					Date fecha = fechaChooser1.getDate();
 					SimpleDateFormat d = new SimpleDateFormat("dd/MM/yyyy");
-					if (fecha == null) {
-						fecha = new Date();
-						Calendar calendar = Calendar.getInstance();
-						calendar.setTime(fecha);
-						calendar.add(Calendar.DAY_OF_YEAR, -1);
-						String fechaaux = d.format(calendar.getTime());
-						try {
-							fechaChooser1.setDate(d.parse(fechaaux));
-						} catch (ParseException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-					}
-
-					fecha = fechaChooser2.getDate();
+					Date fecha = fechaChooser2.getDate();
 					if (fecha == null) {
 						fecha = new Date();
 						String fechaaux = d.format(fecha);
@@ -284,8 +282,7 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 							e1.printStackTrace();
 						}
 					}
-					vaciarTabla();
-					actualizarTabla();
+					fechaChooser2.requestFocusInWindow();
 				}
 			}
 		});
@@ -304,24 +301,8 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					buscarNombres();
-					Date fecha = fechaChooser1.getDate();
+					Date fecha = fechaChooser2.getDate();
 					SimpleDateFormat d = new SimpleDateFormat("dd/MM/yyyy");
-					if (fecha == null) {
-						fecha = new Date();
-						Calendar calendar = Calendar.getInstance();
-						calendar.setTime(fecha);
-						calendar.add(Calendar.DAY_OF_YEAR, -1);
-						String fechaaux = d.format(calendar.getTime());
-						try {
-							fechaChooser1.setDate(d.parse(fechaaux));
-						} catch (ParseException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-					}
-
-					fecha = fechaChooser2.getDate();
 					if (fecha == null) {
 						fecha = new Date();
 						String fechaaux = d.format(fecha);
@@ -332,8 +313,92 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 							e1.printStackTrace();
 						}
 					}
+					buscarNombres();
 					vaciarTabla();
 					actualizarTabla();
+					xTraba.requestFocus();
+					xTraba.selectAll();
+				}
+			}
+		});
+		
+		xTraba.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					xFecha.requestFocusInWindow();
+				}
+			}
+		});
+		
+		xFecha.getDateEditor().getUiComponent().addKeyListener(new java.awt.event.KeyListener() {
+			@Override
+			public void keyTyped(java.awt.event.KeyEvent e) {
+
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					xConcep.requestFocus();
+					xConcep.selectAll();
+				}
+			}
+		});
+		
+		xConcep.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					if (xCant.getText().isEmpty()) {
+						xCant.setText("1");
+						xCant.requestFocus();
+						xCant.selectAll();
+					}
+				}
+			}
+		});
+		
+		xCant.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					buscarNombres();
+					confirmarButton.doClick();
+					textoOperario.requestFocus();
+					textoOperario.selectAll();
 				}
 			}
 		});
@@ -366,6 +431,7 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 				actualizarTexto();
 			}
 		});
+		
 
 		confirmarButton = new JButton("Confirmar");
 		confirmarButton.setMargin(new Insets(2, 28, 2, 28));
@@ -373,6 +439,9 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 		cancelarButton = new JButton("Volver");
 		cancelarButton.setMargin(new Insets(2, 28, 2, 28));
 		cancelarButton.addActionListener(this);
+		borrarButton = new JButton("Limpiar");
+		borrarButton.setMargin(new Insets(2, 28, 2, 28));
+		borrarButton.addActionListener(this);
 
 		JPanel panel1 = new JPanel();
 		JPanel panel2 = new JPanel();
@@ -413,6 +482,8 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 		panel6.setLayout(new BoxLayout(panel6, BoxLayout.X_AXIS));
 		panel6.setAlignmentX(RIGHT_ALIGNMENT);
 		panel6.add(Box.createRigidArea(new Dimension(160, 15)));
+		panel6.add(borrarButton);
+		panel6.add(Box.createRigidArea(new Dimension(50, 15)));
 		panel6.add(confirmarButton);
 		panel6.add(Box.createRigidArea(new Dimension(50, 15)));
 		panel6.add(cancelarButton);
@@ -567,6 +638,11 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 		}
 
 		return 0;
+	}
+	
+	public void activarFoco() {
+		textoOperario.requestFocus();
+		textoOperario.selectAll();
 	}
 
 	public int guardarCambios() {
@@ -728,6 +804,20 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 			}
 		} else if (e.getSource() == cancelarButton) {
 			window.setPanelInicial();
+		} else if (e.getSource() == borrarButton) {
+			vaciarTabla();
+			textoNombre.setText("");
+			textoOperario.setText("");
+			textoOperario.requestFocus();
+			fechaChooser1.setDate(null);
+			fechaChooser2.setDate(null);
+			xFecha.setDate(null);
+			xMov.setText("");
+			xCant.setText("");
+			xDescrip.setText("");
+			xConcep.setText("");
+			xTraba.setText("");
+			xNombreTrabajo.setText("");
 		}
 
 	}
