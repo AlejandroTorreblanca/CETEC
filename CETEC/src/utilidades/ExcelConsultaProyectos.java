@@ -26,7 +26,7 @@ public class ExcelConsultaProyectos {
 		try {
 			archivoXLS.createNewFile();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			new PanelMensaje("Error en la creación del documento Excel.\n"+e, "Error en los datos", "error");
 			e.printStackTrace();
 		}
 		
@@ -68,7 +68,7 @@ public class ExcelConsultaProyectos {
 				f[0].setCellValue(w.getModelo().getNumeroSeleccionado(i - 3));
 
 				f[1] = c[i].createCell(1);
-				f[1].setCellValue(Integer.parseInt(w.getModelo().getCodSeleccionado(i - 3)));
+				f[1].setCellValue(w.getModelo().getCodSeleccionado(i - 3));
 				
 				f[2] = c[i].createCell(2);
 				f[2].setCellValue(w.getModelo().getNombreSeleccionado(i - 3));
@@ -105,7 +105,7 @@ public class ExcelConsultaProyectos {
 				libro.close();
 		        Desktop.getDesktop().open(new File(rutaArchivo));
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
+				new PanelMensaje("Error en la creación del documento Excel.\n"+e, "Error en los datos", "error");
 				e.printStackTrace();
 			}
 			

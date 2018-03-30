@@ -24,30 +24,12 @@ import java.awt.Desktop;
 import java.io.*;
 import java.text.SimpleDateFormat; 
 
-/**
- * Example of using the iText library to work with PDF documents on Java, 
- * lets you create, analyze, modify and maintain documents in this format.
- * Ejemplo de uso de la librer√≠a iText para trabajar con documentos PDF en Java, 
- * nos permite crear, analizar, modificar y mantener documentos en este formato.
- *
- * @author xules You can follow me on my website http://www.codigoxules.org/en
- * Puedes seguirme en mi web http://www.codigoxules.org
- */
 public class PDFConsultaProyectos {
-    private static final Font paragraphFont = FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL);
+    private static final Font paragraphFont = FontFactory.getFont(FontFactory.COURIER, 10, Font.NORMAL);
     
     private PanelConsultaProyectos w;
     
     private static final String iTextExampleImage = "Iconos/logo.jpg";
-    /**
-     * We create a PDF document with iText using different elements to learn 
-     * to use this library.
-     * Creamos un documento PDF con iText usando diferentes elementos para aprender 
-     * a usar esta librer√≠a.
-     * @param pdfNewFile  <code>String</code> 
-     *      pdf File we are going to write. 
-     *      Fichero pdf en el que vamos a escribir. 
-     */
     public void createPDF(PanelConsultaProyectos window) {
     	this.w=window;
         try {
@@ -79,7 +61,7 @@ public class PDFConsultaProyectos {
                 System.out.println("Image IOException " +  ex);
             }
             document.add(new Paragraph("CONSULTA DE PROYECTOS",
-    				FontFactory.getFont("arial",   // fuente
+    				FontFactory.getFont(FontFactory.COURIER,   // fuente
     				15,                            // tamaÒo
     				Font.BOLD,                   // estilo
     				new BaseColor(23, 31, 100))));   
@@ -90,129 +72,248 @@ public class PDFConsultaProyectos {
             
             Integer numColumns = 10;
             PdfPTable table = new PdfPTable(numColumns); 
-            table.setTotalWidth(new float[]{ 25,35,160,35,50,110,70,70,70,55 });
+            table.setTotalWidth(new float[]{ 20,35,160,30,50,110,80,80,80,45 });
             table.setLockedWidth(true);
             PdfPCell columnHeader;
             
+            BaseColor color = new BaseColor(191, 191, 191);
             Phrase phrase = new Phrase();
-            phrase.add(new Chunk("n",  new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)));
+            phrase.add(new Chunk("n",  new Font(Font.FontFamily.COURIER, 8, Font.BOLD)));
 			columnHeader = new PdfPCell(phrase);
 			columnHeader.setHorizontalAlignment(Element.ALIGN_CENTER);
+			columnHeader.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			columnHeader.setMinimumHeight(18f);
+			columnHeader.setBackgroundColor(color);
 			table.addCell(columnHeader);
 			phrase = new Phrase();
-			phrase.add(new Chunk("Cod",  new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)));
+			phrase.add(new Chunk("Cod",  new Font(Font.FontFamily.COURIER, 8, Font.BOLD)));
 			columnHeader = new PdfPCell(phrase);
 			columnHeader.setHorizontalAlignment(Element.ALIGN_CENTER);
+			columnHeader.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			columnHeader.setBackgroundColor(color);
 			table.addCell(columnHeader);
 			phrase = new Phrase();
-			phrase.add(new Chunk("Nombre",  new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)));
+			phrase.add(new Chunk("Nombre",  new Font(Font.FontFamily.COURIER, 8, Font.BOLD)));
 			columnHeader = new PdfPCell(phrase);
 			columnHeader.setHorizontalAlignment(Element.ALIGN_CENTER);
+			columnHeader.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			columnHeader.setBackgroundColor(color);
 			table.addCell(columnHeader);
 			phrase = new Phrase();
-			phrase.add(new Chunk("T.",  new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)));
+			phrase.add(new Chunk("T.",  new Font(Font.FontFamily.COURIER, 8, Font.BOLD)));
 			columnHeader = new PdfPCell(phrase);
 			columnHeader.setHorizontalAlignment(Element.ALIGN_CENTER);
+			columnHeader.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			columnHeader.setBackgroundColor(color);
 			table.addCell(columnHeader);
 			phrase = new Phrase();
 			
-			phrase.add(new Chunk("Estatus",  new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)));
+			phrase.add(new Chunk("Estatus",  new Font(Font.FontFamily.COURIER, 8, Font.BOLD)));
 			columnHeader = new PdfPCell(phrase);
 			columnHeader.setHorizontalAlignment(Element.ALIGN_CENTER);
+			columnHeader.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			columnHeader.setBackgroundColor(color);
 			table.addCell(columnHeader);
 			phrase = new Phrase();
 			
-			phrase.add(new Chunk("Cliente",  new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)));
+			phrase.add(new Chunk("Cliente",  new Font(Font.FontFamily.COURIER, 8, Font.BOLD)));
 			columnHeader = new PdfPCell(phrase);
 			columnHeader.setHorizontalAlignment(Element.ALIGN_CENTER);
+			columnHeader.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			columnHeader.setBackgroundColor(color);
 			table.addCell(columnHeader);
 			phrase = new Phrase();
-			phrase.add(new Chunk("Presup Ä",  new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)));
+			phrase.add(new Chunk("Presup Ä",  new Font(Font.FontFamily.COURIER, 8, Font.BOLD)));
 			columnHeader = new PdfPCell(phrase);
-			columnHeader.setHorizontalAlignment(Element.ALIGN_CENTER);
+			columnHeader.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			columnHeader.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			columnHeader.setBackgroundColor(color);
 			table.addCell(columnHeader);
 			phrase = new Phrase();
-			phrase.add(new Chunk("Costes Ä",  new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)));
+			phrase.add(new Chunk("Costes Ä",  new Font(Font.FontFamily.COURIER, 8, Font.BOLD)));
 			columnHeader = new PdfPCell(phrase);
-			columnHeader.setHorizontalAlignment(Element.ALIGN_CENTER);
+			columnHeader.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			columnHeader.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			columnHeader.setBackgroundColor(color);
 			table.addCell(columnHeader);
 			phrase = new Phrase();
-			phrase.add(new Chunk("Margen Ä",  new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)));
+			phrase.add(new Chunk("Margen Ä",  new Font(Font.FontFamily.COURIER, 8, Font.BOLD)));
 			columnHeader = new PdfPCell(phrase);
-			columnHeader.setHorizontalAlignment(Element.ALIGN_CENTER);
+			columnHeader.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			columnHeader.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			columnHeader.setBackgroundColor(color);
 			table.addCell(columnHeader);
 			phrase = new Phrase();
-			phrase.add(new Chunk("Margen %",  new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)));
+			phrase.add(new Chunk("Margen %",  new Font(Font.FontFamily.COURIER, 8, Font.BOLD)));
 			columnHeader = new PdfPCell(phrase);
-			columnHeader.setHorizontalAlignment(Element.ALIGN_CENTER);
+			columnHeader.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			columnHeader.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			columnHeader.setBackgroundColor(color);
 			table.addCell(columnHeader);
             
             table.setHeaderRows(1);
             PdfPCell columnCell;
-            for (int row = 0; row < w.getModelo().getRowCount() ; row++) {
+            int n= w.getModelo().getRowCount();
+            for (int row = 0; row < n-1 ; row++) {
 				phrase = new Phrase();
-				phrase.add(new Chunk(Integer.toString(w.getModelo().getNumeroSeleccionado(row)), new Font(Font.FontFamily.TIMES_ROMAN, 7, Font.NORMAL)));
+				phrase.add(new Chunk(Integer.toString(w.getModelo().getNumeroSeleccionado(row)), new Font(Font.FontFamily.COURIER, 7, Font.NORMAL)));
 				columnCell = new PdfPCell(phrase);
 				columnCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				columnCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				columnCell.setMinimumHeight(24f);
 				table.addCell(columnCell);
 				
 				phrase = new Phrase();
-				phrase.add(new Chunk(w.getModelo().getCodSeleccionado(row), new Font(Font.FontFamily.TIMES_ROMAN, 7, Font.NORMAL)));
+				phrase.add(new Chunk(w.getModelo().getCodSeleccionado(row), new Font(Font.FontFamily.COURIER, 7, Font.NORMAL)));
 				columnCell = new PdfPCell(phrase);
 				columnCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				columnCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 				table.addCell(columnCell);
 				
 				phrase = new Phrase();
-				phrase.add(new Chunk(w.getModelo().getNombreSeleccionado(row), new Font(Font.FontFamily.TIMES_ROMAN, 7, Font.NORMAL)));
+				phrase.add(new Chunk(w.getModelo().getNombreSeleccionado(row), new Font(Font.FontFamily.COURIER, 7, Font.NORMAL)));
 				columnCell = new PdfPCell(phrase);
 				columnCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				columnCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 				table.addCell(columnCell);
 				
 				phrase = new Phrase();
-				phrase.add(new Chunk(w.getModelo().getTipoSeleccionado(row), new Font(Font.FontFamily.TIMES_ROMAN, 7, Font.NORMAL)));
+				phrase.add(new Chunk(w.getModelo().getTipoSeleccionado(row), new Font(Font.FontFamily.COURIER, 7, Font.NORMAL)));
 				columnCell = new PdfPCell(phrase);
 				columnCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				columnCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 				table.addCell(columnCell);
 				
 				phrase = new Phrase();
-				if(w.getModelo().getEstatusSeleccionada(row).compareTo("null")==0)
-					phrase.add(new Chunk("", new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.NORMAL)));
+				if(w.getModelo().getEstatusSeleccionada(row)==null)
+					phrase.add(new Chunk("", new Font(Font.FontFamily.COURIER, 8, Font.NORMAL)));
 				else
-					phrase.add(new Chunk(w.getModelo().getEstatusSeleccionada(row), new Font(Font.FontFamily.TIMES_ROMAN, 7, Font.NORMAL)));
+					phrase.add(new Chunk(w.getModelo().getEstatusSeleccionada(row), new Font(Font.FontFamily.COURIER, 7, Font.NORMAL)));
 				columnCell = new PdfPCell(phrase);
 				columnCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				columnCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 				table.addCell(columnCell);
 				
 				phrase = new Phrase();
-				phrase.add(new Chunk(w.getModelo().getClienteSeleccionado(row), new Font(Font.FontFamily.TIMES_ROMAN, 7, Font.NORMAL)));
+				phrase.add(new Chunk(w.getModelo().getClienteSeleccionado(row), new Font(Font.FontFamily.COURIER, 7, Font.NORMAL)));
 				columnCell = new PdfPCell(phrase);
 				columnCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				columnCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 				table.addCell(columnCell);
 				
 				phrase = new Phrase();
-				phrase.add(new Chunk(w.getModelo().getPresupSeleccionado(row), new Font(Font.FontFamily.TIMES_ROMAN, 7, Font.NORMAL)));
+				phrase.add(new Chunk(w.getModelo().getPresupSeleccionado(row), new Font(Font.FontFamily.COURIER, 7, Font.NORMAL)));
 				columnCell = new PdfPCell(phrase);
-				columnCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				columnCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+				columnCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 				table.addCell(columnCell);
 				
 				phrase = new Phrase();
-				phrase.add(new Chunk(w.getModelo().getCostesSeleccionado(row), new Font(Font.FontFamily.TIMES_ROMAN, 7, Font.NORMAL)));
+				phrase.add(new Chunk(w.getModelo().getCostesSeleccionado(row), new Font(Font.FontFamily.COURIER, 7, Font.NORMAL)));
 				columnCell = new PdfPCell(phrase);
-				columnCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				columnCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+				columnCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 				table.addCell(columnCell);
 				
 				phrase = new Phrase();
-				phrase.add(new Chunk(w.getModelo().getMargenSeleccionado(row), new Font(Font.FontFamily.TIMES_ROMAN, 7, Font.NORMAL)));
+				phrase.add(new Chunk(w.getModelo().getMargenSeleccionado(row), new Font(Font.FontFamily.COURIER, 7, Font.NORMAL)));
 				columnCell = new PdfPCell(phrase);
-				columnCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				columnCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+				columnCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 				table.addCell(columnCell);
 				
 				phrase = new Phrase();
-				phrase.add(new Chunk(w.getModelo().getMargenPSeleccionado(row), new Font(Font.FontFamily.TIMES_ROMAN, 7, Font.NORMAL)));
+				phrase.add(new Chunk(w.getModelo().getMargenPSeleccionado(row), new Font(Font.FontFamily.COURIER, 7, Font.NORMAL)));
 				columnCell = new PdfPCell(phrase);
-				columnCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				columnCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+				columnCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 				table.addCell(columnCell);
             }
+            int row=n-1;
+            phrase = new Phrase();
+			phrase.add(new Chunk(Integer.toString(w.getModelo().getNumeroSeleccionado(row)), new Font(Font.FontFamily.COURIER, 7, Font.NORMAL)));
+			columnCell = new PdfPCell(phrase);
+			columnCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			columnCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			columnCell.setBackgroundColor(color);
+			columnCell.setMinimumHeight(24f);
+			table.addCell(columnCell);
+			
+			phrase = new Phrase();
+			phrase.add(new Chunk(w.getModelo().getCodSeleccionado(row), new Font(Font.FontFamily.COURIER, 7, Font.NORMAL)));
+			columnCell = new PdfPCell(phrase);
+			columnCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			columnCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			columnCell.setBackgroundColor(color);
+			table.addCell(columnCell);
+			
+			phrase = new Phrase();
+			phrase.add(new Chunk(w.getModelo().getNombreSeleccionado(row), new Font(Font.FontFamily.COURIER, 7, Font.NORMAL)));
+			columnCell = new PdfPCell(phrase);
+			columnCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			columnCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			columnCell.setBackgroundColor(color);
+			table.addCell(columnCell);
+			
+			phrase = new Phrase();
+			phrase.add(new Chunk(w.getModelo().getTipoSeleccionado(row), new Font(Font.FontFamily.COURIER, 7, Font.NORMAL)));
+			columnCell = new PdfPCell(phrase);
+			columnCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			columnCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			columnCell.setBackgroundColor(color);
+			table.addCell(columnCell);
+			
+			phrase = new Phrase();
+			if(w.getModelo().getEstatusSeleccionada(row).compareTo("null")==0)
+				phrase.add(new Chunk("", new Font(Font.FontFamily.COURIER, 8, Font.NORMAL)));
+			else
+				phrase.add(new Chunk(w.getModelo().getEstatusSeleccionada(row), new Font(Font.FontFamily.COURIER, 7, Font.NORMAL)));
+			columnCell = new PdfPCell(phrase);
+			columnCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			columnCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			columnCell.setBackgroundColor(color);
+			table.addCell(columnCell);
+			
+			phrase = new Phrase();
+			phrase.add(new Chunk(w.getModelo().getClienteSeleccionado(row), new Font(Font.FontFamily.COURIER, 7, Font.NORMAL)));
+			columnCell = new PdfPCell(phrase);
+			columnCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			columnCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			columnCell.setBackgroundColor(color);
+			table.addCell(columnCell);
+			
+			phrase = new Phrase();
+			phrase.add(new Chunk(w.getModelo().getPresupSeleccionado(row), new Font(Font.FontFamily.COURIER, 7, Font.NORMAL)));
+			columnCell = new PdfPCell(phrase);
+			columnCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			columnCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			columnCell.setBackgroundColor(color);
+			table.addCell(columnCell);
+			
+			phrase = new Phrase();
+			phrase.add(new Chunk(w.getModelo().getCostesSeleccionado(row), new Font(Font.FontFamily.COURIER, 7, Font.NORMAL)));
+			columnCell = new PdfPCell(phrase);
+			columnCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			columnCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			columnCell.setBackgroundColor(color);
+			table.addCell(columnCell);
+			
+			phrase = new Phrase();
+			phrase.add(new Chunk(w.getModelo().getMargenSeleccionado(row), new Font(Font.FontFamily.COURIER, 7, Font.NORMAL)));
+			columnCell = new PdfPCell(phrase);
+			columnCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			columnCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			columnCell.setBackgroundColor(color);
+			table.addCell(columnCell);
+			
+			phrase = new Phrase();
+			phrase.add(new Chunk(w.getModelo().getMargenPSeleccionado(row), new Font(Font.FontFamily.COURIER, 7, Font.NORMAL)));
+			columnCell = new PdfPCell(phrase);
+			columnCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			columnCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			columnCell.setBackgroundColor(color);
+			table.addCell(columnCell);
+            
             document.add(table);
             
            
@@ -222,7 +323,7 @@ public class PDFConsultaProyectos {
             try {
 				Desktop.getDesktop().open(new File(rutaArchivo));
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
+				new PanelMensaje("Error en la creaciÛn del documento PDF.\n"+e, "Error en los datos", "error");
 				e.printStackTrace();
 			}
             System.out.println("Your PDF file has been generated!(¬°Se ha generado tu hoja PDF!");
@@ -230,11 +331,4 @@ public class PDFConsultaProyectos {
             System.out.println("The file not exists (Se ha producido un error al generar un documento): " + documentException);
         }
     }
-//    /**
-//     * @param args the command line arguments
-//     */
-//    public static void main(String args[]) {
-//        GeneratePDFFileIText generatePDFFileIText = new GeneratePDFFileIText();
-//        generatePDFFileIText.createPDF();
-//    }
 }

@@ -139,19 +139,23 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					Date fecha = fechaChooser1.getDate();
-					SimpleDateFormat d = new SimpleDateFormat("dd/MM/yyyy");
-					if (fecha == null) {
-						fecha = new Date();
-						String fechaaux = d.format(fecha);
-						try {
-							fechaChooser1.setDate(d.parse(fechaaux));
-						} catch (ParseException e1) {
-							new PanelMensaje("Error al cargar los datos", "Error", "error");
-							e1.printStackTrace();
+					int res = buscarNombres();
+					if (res != -1) {
+						Date fecha = fechaChooser1.getDate();
+						SimpleDateFormat d = new SimpleDateFormat("dd/MM/yyyy");
+						if (fecha == null) {
+							fecha = new Date();
+							String fechaaux = d.format(fecha);
+							try {
+								fechaChooser1.setDate(d.parse(fechaaux));
+							} catch (ParseException e1) {
+								new PanelMensaje("Error al cargar los datos", "Error", "error");
+								e1.printStackTrace();
+							}
 						}
-					}
-					fechaChooser1.requestFocusInWindow();
+						fechaChooser1.requestFocusInWindow();
+					} else
+						new PanelMensaje("Operario introducido no encontrado.", "Error en los datos", "error");
 				}
 			}
 		});
@@ -160,7 +164,7 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 			@Override
 			public void propertyChange(PropertyChangeEvent e) {
 				if ("date".equals(e.getPropertyName())) {
-					if (fechaChooser2.getDate() != null) {
+					if (fechaChooser2.getDate() != null && fechaChooser1.getDate() != null) {
 						vaciarTabla();
 						actualizarTabla();
 
@@ -173,7 +177,7 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 			@Override
 			public void propertyChange(PropertyChangeEvent e) {
 				if ("date".equals(e.getPropertyName())) {
-					if (fechaChooser2.getDate() != null) {
+					if (fechaChooser2.getDate() != null && fechaChooser1.getDate() != null) {
 						vaciarTabla();
 						actualizarTabla();
 					}
@@ -198,7 +202,6 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 					try {
 						xFecha.setDate(d.parse(fechaaux));
 					} catch (ParseException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 
@@ -250,7 +253,6 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 						try {
 							fechaChooser2.setDate(d.parse(fechaaux));
 						} catch (ParseException e1) {
-							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
 					}
@@ -281,7 +283,6 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 						try {
 							fechaChooser2.setDate(d.parse(fechaaux));
 						} catch (ParseException e1) {
-							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
 					}
@@ -307,7 +308,12 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					xFecha.requestFocusInWindow();
+					int res = buscarNombres();
+					if (res != -2)
+						xFecha.requestFocusInWindow();
+					else
+						new PanelMensaje("Trabajo introducido no encontrado.", "Error en los datos", "error");
+					
 				}
 			}
 		});
@@ -328,9 +334,10 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					if (xHoras.getText().isEmpty()) {
 						xHoras.setText("1");
-						xHoras.requestFocus();
-						xHoras.selectAll();
 					}
+					xHoras.requestFocus();
+					xHoras.selectAll();
+					
 				}
 			}
 		});
@@ -457,7 +464,7 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 			if (rs.first())
 				return rs.getString("NOMBRE");
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			new PanelMensaje("Error en el acceso a la base de datos.\n"+e, "Error en los datos", "error");
 			e.printStackTrace();
 		}
 		return "";
@@ -470,7 +477,7 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 			if (rs.first())
 				return rs.getString("DENOMINACION");
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			new PanelMensaje("Error en el acceso a la base de datos.\n"+e, "Error en los datos", "error");
 			e.printStackTrace();
 		}
 		return "";
@@ -491,7 +498,7 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 			try {
 				xFecha.setDate(d.parse(fecha));
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
+				new PanelMensaje("Error en el acceso a la base de datos.\n"+e, "Error en los datos", "error");
 				e.printStackTrace();
 			}
 			xNombre.setText(nombre);
@@ -515,6 +522,7 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 			} else
 				xNombreTrabajo.setText(trabajo);
 		}
+		else return -2;
 
 		return 0;
 	}
@@ -530,7 +538,6 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 			try {
 				xFecha.setDate(d.parse(fechaaux));
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -563,7 +570,7 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 				}
 
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
+				new PanelMensaje("Error en el acceso a la base de datos.\n"+e, "Error en los datos", "error");
 				e.printStackTrace();
 			}
 	}
@@ -578,18 +585,19 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 		String str = "MOVIMIENTO='" + xMov.getText() + "'";
 
 		if (!xMov.getText().isEmpty())
+		{
 			try {
 				SimpleDateFormat d = new SimpleDateFormat("dd/MM/yyyy");
 				ResultSet rs = controlador.setStatementSelect("CTCMOV", str);
-				int precio = buscarPrecio(textoOperario.getText());
+				float precio = buscarPrecio(textoOperario.getText());
 
 				if (rs.first()) { // Update
 					if (precio != -1) {
-						int importe = Integer.parseInt(xHoras.getText()) * precio;
+						float importe = Integer.parseInt(xHoras.getText()) * precio;
 						String str1 = "TRABAJO='" + xTraba.getText() + "',FECHA=? ,OPERARIO='" + textoOperario.getText()
 								+ "',HORAS='" + xHoras.getText() + "',DESCRIPCION='"
-								+ buscarTrabajador(textoOperario.getText()) + "',PRECIO='" + Integer.toString(precio)
-								+ "',IMPORTE='" + Integer.toString(importe) + "'";
+								+ buscarTrabajador(textoOperario.getText()) + "',PRECIO='" + Float.toString(precio)
+								+ "',IMPORTE='" + Float.toString(importe) + "'";
 						if (xFecha.getDate() != null)
 							try {
 								String fecha = d.format(xFecha.getDate());
@@ -611,12 +619,12 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 					}
 				} else { // Insert
 					if (precio != -1) {
-						int importe = Integer.parseInt(xHoras.getText()) * precio;
+						float importe = Integer.parseInt(xHoras.getText()) * precio;
 						String str1 = "(MOVIMIENTO,TRABAJO,FECHA,OPERARIO,HORAS,DESCRIPCION,PRECIO,IMPORTE)";
 						String str2 = "('" + xMov.getText() + "','" + xTraba.getText() + "',?,'"
 								+ textoOperario.getText() + "','" + xHoras.getText() + "','"
-								+ buscarTrabajador(textoOperario.getText()) + "','" + Integer.toString(precio) + "','"
-								+ Integer.toString(importe) + "')";
+								+ buscarTrabajador(textoOperario.getText()) + "','" + Float.toString(precio) + "','"
+								+ Float.toString(importe) + "')";
 						if (xFecha.getDate() != null)
 							try {
 								String fecha = d.format(xFecha.getDate());
@@ -640,10 +648,15 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 				}
 
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
+				new PanelMensaje("Error en el acceso a la base de datos.\n"+e, "Error en los datos", "error");
 				e.printStackTrace();
 				return false;
 			}
+		}
+		else{
+			new PanelMensaje("Identificador de movimiento no válido.", "Error en los datos", "error");
+			return false;
+		}
 		return true;
 	}
 
@@ -676,7 +689,7 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 		}
 	}
 
-	public int buscarPrecio(String operario) {
+	public float buscarPrecio(String operario) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(new Date());
 		String str = "AÑO='" + Integer.toString(calendar.get(Calendar.YEAR)) + "' AND OPERARIO='" + operario + "'";
@@ -684,11 +697,11 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 		try {
 			ResultSet rs = controlador.setStatementSelect("CTCPRE", str);
 			if (rs.first())
-				return rs.getInt("PRECIO");
+				return rs.getFloat("PRECIO");
 			else
 				return -1;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			new PanelMensaje("Error en el acceso a la base de datos.\n"+e, "Error en los datos", "error");
 			e.printStackTrace();
 		}
 		return -1;
@@ -720,7 +733,7 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 						try {
 							xFecha.setDate(d.parse(fechaaux));
 						} catch (ParseException e2) {
-							// TODO Auto-generated catch block
+							new PanelMensaje("Error en el acceso a la base de datos.\n"+e2, "Error en los datos", "error");
 							e2.printStackTrace();
 						}
 					}

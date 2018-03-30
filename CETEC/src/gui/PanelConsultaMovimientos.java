@@ -19,6 +19,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -57,6 +59,7 @@ public class PanelConsultaMovimientos extends JPanel implements ActionListener, 
 	private JTextField textoTotalProyecto;
 	private JTextField textoCostesPersonal;
 	private JTextField textoCostesOficina;
+	Map<String, Float> mapaPrecios;
 	
 	public JTextField getTextoTrabajo() {
 		return textoTrabajo;
@@ -136,6 +139,7 @@ public class PanelConsultaMovimientos extends JPanel implements ActionListener, 
 	public PanelConsultaMovimientos(VentanaPrincipal w) {
 
 		this.window = w;
+		mapaPrecios= new HashMap<String, Float>();
 		controlador = Controlador.getUnicaInstancia();
 		JLabel rotuloTrabajo = new JLabel("Cod. Trabajo: ", SwingConstants.CENTER);
 		JLabel rotuloOperarioIni = new JLabel("Desde Operario: ", SwingConstants.CENTER);
@@ -444,7 +448,20 @@ public class PanelConsultaMovimientos extends JPanel implements ActionListener, 
 			if (rs.first())
 				return rs.getString("DENOMINACION");
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			new PanelMensaje("Error en el acceso a la base de datos.\n"+e, "Error en los datos", "error");
+			e.printStackTrace();
+		}
+		return "";
+	}
+	
+	public String buscarCliente() {
+		String str = "NRO_TRABAJO='" + textoTrabajo.getText() + "'";
+		try {
+			ResultSet rs = controlador.setStatementSelect("CTCTRB", str);
+			if (rs.first())
+				return rs.getString("CLIENTE");
+		} catch (SQLException e) {
+			new PanelMensaje("Error en el acceso a la base de datos.\n"+e, "Error en los datos", "error");
 			e.printStackTrace();
 		}
 		return "";
@@ -465,7 +482,6 @@ public class PanelConsultaMovimientos extends JPanel implements ActionListener, 
 					fecha = d.parse("01/01/1980");
 					fechaChooser1.setDate(fecha);
 				} catch (ParseException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -484,6 +500,32 @@ public class PanelConsultaMovimientos extends JPanel implements ActionListener, 
 		textoTrabajo.requestFocus();
 		textoTrabajo.selectAll();
 	}
+	
+	public float buscarPrecio(String operario, Date fecha) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(fecha);
+		String clave = operario + calendar.get(Calendar.YEAR);
+		if (!mapaPrecios.containsKey(clave)) {
+			String str = "AÑO='" + Integer.toString(calendar.get(Calendar.YEAR)) + "' AND OPERARIO='" + operario + "'";
+			try {
+				ResultSet rs = controlador.setStatementSelect("CTCPRE", str);
+				if (rs.first()){
+					mapaPrecios.put(clave, rs.getFloat("PRECIO"));
+					return rs.getFloat("PRECIO");
+				}
+				else
+					return -1;
+			} catch (SQLException e) {
+				new PanelMensaje("Error en el acceso a la base de datos.\n" + e, "Error en los datos", "error");
+				e.printStackTrace();
+			}
+		}
+		else{
+			return mapaPrecios.get(clave);
+		}
+
+		return -1;
+	}
 
 	public void actualizarTabla() {
 		SimpleDateFormat d = new SimpleDateFormat("dd/MM/yyyy");
@@ -497,26 +539,29 @@ public class PanelConsultaMovimientos extends JPanel implements ActionListener, 
 			int horas,horasTotales=0;
 			float precio,importe,totalPer=0,totalOfi=0;
 			Date fecha;
-			
+			mapaPrecios= new HashMap<String, Float>();
 			while (rs.next()) {
 				concepto= rs.getString("CONCEPTO");
 				operario = rs.getString("OPERARIO");
 				fecha = rs.getDate("FECHA");
 				nombre = rs.getString("DESCRIPCION");
 				horas = rs.getInt("HORAS");
-				precio = rs.getFloat("PRECIO");
-				importe = rs.getFloat("IMPORTE");
-
 				if (concepto == null) {
+					precio = buscarPrecio(operario,fecha);
+					importe=precio*horas;
 					totalPer += importe;
 					horasTotales += horas;
 				} else {
 					if (concepto.isEmpty())
 					{
+						precio = buscarPrecio(operario,fecha);
+						importe=precio*horas;
 						totalPer += importe;
 						horasTotales += horas;
 					}
 					else
+						precio = rs.getFloat("PRECIO");
+						importe = rs.getFloat("IMPORTE");
 						totalOfi += importe;
 				}
 				
@@ -527,7 +572,7 @@ public class PanelConsultaMovimientos extends JPanel implements ActionListener, 
 			if (rs.first()) {
 				float coefOfi = rs.getFloat("OFICINA");
 				float coefPer = rs.getFloat("PERSONAL");
-				DecimalFormat format = new DecimalFormat("###,###.00");
+				DecimalFormat format = new DecimalFormat("###,##0.00");
 				textoHoras.setText(Integer.toString(horasTotales));
 				textoCostesOficina.setText(format.format(totalOfi));
 				textoCostesPersonal.setText(format.format(totalPer));
@@ -540,7 +585,7 @@ public class PanelConsultaMovimientos extends JPanel implements ActionListener, 
 				textoTotalProyecto.setText(format.format(totalOfi * coefOfi + totalPer * coefPer));
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			new PanelMensaje("Error en el acceso a la base de datos.\n"+e, "Error en los datos", "error");
 			e.printStackTrace();
 		}
 	}
@@ -613,14 +658,10 @@ public class PanelConsultaMovimientos extends JPanel implements ActionListener, 
 
 	@Override
 	public void keyReleased(KeyEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void keyTyped(KeyEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 	
 		

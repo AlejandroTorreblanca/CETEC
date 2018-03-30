@@ -11,6 +11,8 @@ import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import controlador.Controlador;
+
 @SuppressWarnings("serial")
 public class VentanaPrincipal extends JFrame {
 
@@ -27,6 +29,9 @@ public class VentanaPrincipal extends JFrame {
 
 	
 	private void inicializarPaneles() {
+		
+		
+		
 		panelTrabajos = new PanelTrabajos(this);
 		panelOperarios=new PanelOperarios(this);
 		panelInicial = new PanelInicial(this);
@@ -54,6 +59,11 @@ public class VentanaPrincipal extends JFrame {
 		add(panelCentral);
 		
 	}
+	
+	private void close(){
+        Controlador.getUnicaInstancia().close();
+		System.exit(0);
+    }   
 	
 	public void setPanelInicial(){
 		CardLayout cl=(CardLayout)panelCentral.getLayout();
@@ -110,6 +120,12 @@ public class VentanaPrincipal extends JFrame {
 	
 
 	public VentanaPrincipal() {	
+		addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                close();
+            }
+        });
 		inicializarPaneles();
 		Toolkit miPantalla = Toolkit.getDefaultToolkit();
 		Dimension tamPantalla = miPantalla.getScreenSize();

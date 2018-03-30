@@ -176,7 +176,7 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 				}
 			}
 		});
-		
+
 		comboClave.addKeyListener(new KeyListener() {
 
 			@Override
@@ -190,7 +190,7 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					if(fechaChooser1.getDate()==null)
+					if (fechaChooser1.getDate() == null)
 						fechaChooser1.setDate(new Date());
 					fechaChooser1.requestFocusInWindow();
 				}
@@ -255,8 +255,6 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 			}
 		});
 
-		
-
 		textoCliente.addKeyListener(new KeyListener() {
 
 			@Override
@@ -294,7 +292,7 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 				}
 			}
 		});
-		
+
 		comboEstatus.addKeyListener(new KeyListener() {
 
 			@Override
@@ -332,7 +330,7 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 				}
 			}
 		});
-		
+
 		comboCob.addKeyListener(new KeyListener() {
 
 			@Override
@@ -351,7 +349,7 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 				}
 			}
 		});
-		
+
 		comboFra.addKeyListener(new KeyListener() {
 
 			@Override
@@ -586,21 +584,41 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 				SimpleDateFormat d = new SimpleDateFormat("dd/MM/yyyy");
 				ResultSet rs = controlador.setStatementSelect("CTCTRB", str);
 				if (rs.first()) { // Update
-					String str1 = "CLAVE_TRABAJO='" + comboClave.getSelectedItem() + "',FECHA_CONTRATO=?,DENOMINACION='"
+					String clave="", cob="", estatus="", fra="";
+					if(comboClave.getSelectedItem()!=null){
+						clave=(String)comboClave.getSelectedItem();
+					}
+					if(comboCob.getSelectedItem()!=null){
+						cob=(String)comboCob.getSelectedItem();
+					}
+					if(comboEstatus.getSelectedItem()!=null){
+						estatus=(String)comboEstatus.getSelectedItem();
+					}
+					if(comboFra.getSelectedItem()!=null){
+						fra=(String)comboFra.getSelectedItem();
+					}
+					String str1 = "CLAVE_TRABAJO='" + clave + "',FECHA_CONTRATO=?,DENOMINACION='"
 							+ textoDeno.getText() + "',DESCRIPCION='" + textoDescrip.getText() + "',CLIENTE='"
 							+ textoCliente.getText() + "',TRABAJADOR='" + textoTrabajador.getText() + "',PRESUPUESTO='"
-							+ textoPresup.getText().replace(",", ".") + "',FACTURADO='" + comboFra.getSelectedItem()
-							+ "',COBRADO='" + comboCob.getSelectedItem() + "',OBSERVACIONES='" + textoObs.getText()
-							+ "',ESTATUS='" + comboEstatus.getSelectedItem() + "'";
+							+ textoPresup.getText().replace(",", ".") + "',FACTURADO='" + fra
+							+ "',COBRADO='" + cob + "',OBSERVACIONES='" + textoObs.getText()
+							+ "',ESTATUS='" + estatus + "'";
 					String str2 = "NRO_TRABAJO='" + textoCodigo.getText() + "'";
 					if (fechaChooser1.getDate() != null)
 						try {
 							String fecha = d.format(fechaChooser1.getDate());
 							if (validarFecha(fecha)) {
-								System.out.println(fecha);
-								controlador.setStatementUpdate("CTCTRB", str1, str2, d.parse(fecha));
-								new PanelMensaje("Cambios guardados con éxito.", "Confirmación de cambios", "info");
-								return true;
+								if (isNumeric(textoPresup.getText())) {
+									System.out.println(fecha);
+									controlador.setStatementUpdate("CTCTRB", str1, str2, d.parse(fecha));
+									new PanelMensaje("Cambios guardados con éxito.", "Confirmación de cambios", "info");
+									return true;
+								} else {
+									new PanelMensaje("El presupuesto introducido no es válido ", "Error en los datos",
+											"error");
+									return false;
+								}
+
 							} else {
 								new PanelMensaje("La fecha introducida no es válida ", "Error en los datos", "error");
 								return false;
@@ -615,20 +633,39 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 						return false;
 					}
 				} else { // Insert
+					String clave="", cob="", estatus="", fra="";
+					if(comboClave.getSelectedItem()!=null){
+						clave=(String)comboClave.getSelectedItem();
+					}
+					if(comboCob.getSelectedItem()!=null){
+						cob=(String)comboCob.getSelectedItem();
+					}
+					if(comboEstatus.getSelectedItem()!=null){
+						estatus=(String)comboEstatus.getSelectedItem();
+					}
+					if(comboFra.getSelectedItem()!=null){
+						fra=(String)comboFra.getSelectedItem();
+					}
 					String str1 = "(NRO_TRABAJO,CLAVE_TRABAJO,FECHA_CONTRATO,DENOMINACION,DESCRIPCION,CLIENTE,"
 							+ "TRABAJADOR,PRESUPUESTO,FACTURADO,COBRADO,OBSERVACIONES,ESTATUS)";
-					String str2 = "('" + textoCodigo.getText() + "','" + comboClave.getSelectedItem() + "', ? ,'"
+					String str2 = "('" + textoCodigo.getText() + "','" + clave + "', ? ,'"
 							+ textoDeno.getText() + "','" + textoDescrip.getText() + "','" + textoCliente.getText()
 							+ "','" + textoTrabajador.getText() + "','" + textoPresup.getText().replace(",", ".")
-							+ "','" + comboFra.getSelectedItem() + "','" + comboCob.getSelectedItem() + "','"
-							+ textoObs.getText() + "','" + comboEstatus.getSelectedItem() + "')";
+							+ "','" + fra + "','" + cob + "','"
+							+ textoObs.getText() + "','" + estatus + "')";
 					if (fechaChooser1.getDate() != null)
 						try {
 							String fecha = d.format(fechaChooser1.getDate());
 							if (validarFecha(fecha)) {
-								controlador.setStatementInsert("CTCTRB", str1, str2, d.parse(fecha));
-								new PanelMensaje("Cambios guardados con éxito.", "Confirmación de cambios", "info");
-								return true;
+								if (isNumeric(textoPresup.getText())) {
+									controlador.setStatementInsert("CTCTRB", str1, str2, d.parse(fecha));
+									new PanelMensaje("Cambios guardados con éxito.", "Confirmación de cambios", "info");
+									return true;
+								} else {
+									new PanelMensaje("El presupuesto introducido no es válido ", "Error en los datos",
+											"error");
+									return false;
+								}
 							} else {
 								new PanelMensaje("La fecha introducida no es válida ", "Error en los datos", "error");
 								return false;
@@ -725,7 +762,7 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 
 	public boolean isNumeric(String cadena) {
 		try {
-			Float.parseFloat(cadena);
+			Float.parseFloat(cadena.replace(",", "."));
 			return true;
 		} catch (NumberFormatException excepcion) {
 			return false;
@@ -741,7 +778,7 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 				new PanelMensaje("El operario introducido no ha sido registrado.", "Error en los datos", "error");
 			else {
 				textoNombre.setText(nombre);
-				if(guardarCambios()){
+				if (guardarCambios()) {
 					DecimalFormat format = new DecimalFormat("0000");
 					textoCodigo.setText(format.format(controlador.getIdentificadorTRB()));
 					textoCodigo.requestFocus();

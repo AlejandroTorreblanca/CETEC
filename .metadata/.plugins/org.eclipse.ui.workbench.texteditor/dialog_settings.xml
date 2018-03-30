@@ -2,22 +2,23 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="borrarButton" key="selection"/>
+		<item value="CTCTRB" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
+			<item value="ctctrb"/>
+			<item value="c"/>
+			<item value="TIMES_ROMAN"/>
+			<item value="panelmen"/>
 			<item value="borrarButton"/>
 			<item value="borrarB"/>
 			<item value="cancelarButton"/>
 			<item value="xHoras.req"/>
-			<item value="fechaChooser1.set"/>
-			<item value="textoPrecio.req"/>
-			<item value="textoCodigo.addKeyListener"/>
-			<item value="cuatro"/>
 		</list>
 		<list key="replacehistory">
+			<item value="COURIER"/>
 			<item value="comboFra"/>
 			<item value="comboCob"/>
 			<item value="comboPresup"/>

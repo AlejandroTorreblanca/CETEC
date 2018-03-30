@@ -201,7 +201,7 @@ public class PanelCoeficientes extends JPanel implements ActionListener, KeyList
 			añoLibre = Integer.toString(año + 1);
 
 		} catch (SQLException e) {
-			new PanelMensaje("Error al actualizar los datos.", "Error", "error");
+			new PanelMensaje("Error al actualizar los datos.\n"+e, "Error", "error");
 			e.printStackTrace();
 		}
 
@@ -258,7 +258,7 @@ public class PanelCoeficientes extends JPanel implements ActionListener, KeyList
 				textoOficina.setText("");
 
 			} catch (SQLException e1) {
-				new PanelMensaje("Error al guardar los datos.", "Error", "error");
+				new PanelMensaje("Error al guardar los datos.\n"+e1, "Error", "error");
 				e1.printStackTrace();
 			}
 	}

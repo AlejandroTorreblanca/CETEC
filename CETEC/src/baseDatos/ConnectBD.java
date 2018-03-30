@@ -26,7 +26,7 @@ public class ConnectBD {
  
     public ConnectBD(){
  
-        String nombreBD="bd.accdb";
+        String nombreBD="CETECbd.accdb";
         this.nombre_bd=System.getProperty("user.dir").replace("\\", "\\\\")+"\\\\"+nombreBD;
         this.usuarioBD="";
         this.passwordBD="";
@@ -104,7 +104,7 @@ public class ConnectBD {
 			this.sentencia.close();
 			this.conexion.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null,"Error al cerrar la base de datos.\n "+e);
 			e.printStackTrace();
 		}
     }

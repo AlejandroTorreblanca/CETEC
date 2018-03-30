@@ -32,10 +32,22 @@ public class ModeloTablaProyectos extends DefaultTableModel {
 		DecimalFormat format = new DecimalFormat("###,##0.00");
 		nuevafila[0]=n;
 		nuevafila[1]=cod;
-		nuevafila[2]=nombre;
-		nuevafila[3]=tipo;
-		nuevafila[4]=estatus;
-		nuevafila[5]=cliente;
+		if(nombre==null)
+			nuevafila[2]="";
+		else
+			nuevafila[2]=nombre;
+		if(tipo==null)
+			nuevafila[3]="";
+		else
+			nuevafila[3]=tipo;
+		if(estatus==null)
+			nuevafila[4]="";
+		else
+			nuevafila[4]=estatus;
+		if(cliente==null)
+			nuevafila[5]="";
+		else
+			nuevafila[5]=cliente;
 		nuevafila[6]=format.format(presup);
 		nuevafila[7]=format.format(costes);
 		nuevafila[8]=format.format(margen);

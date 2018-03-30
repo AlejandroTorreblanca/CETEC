@@ -122,7 +122,6 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 					try {
 						xFecha.setDate(d.parse(fechaaux));
 					} catch (ParseException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 
@@ -144,16 +143,16 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 			}
 
 			public void warn() {
-				if (textoOperario.getText().length() == 4){
+				if (textoOperario.getText().length() == 4) {
 					inicializarDatos();
-					if(fechaChooser2.getDate()!=null && fechaChooser1.getDate()!=null) {
-			    		vaciarTabla();
-			    		actualizarTabla();
-			    	}
+					if (fechaChooser2.getDate() != null && fechaChooser1.getDate() != null) {
+						vaciarTabla();
+						actualizarTabla();
+					}
 				}
 			}
 		});
-		
+
 		textoOperario.addKeyListener(new KeyListener() {
 
 			@Override
@@ -167,19 +166,23 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					Date fecha = fechaChooser1.getDate();
-					SimpleDateFormat d = new SimpleDateFormat("dd/MM/yyyy");
-					if (fecha == null) {
-						fecha = new Date();
-						String fechaaux = d.format(fecha);
-						try {
-							fechaChooser1.setDate(d.parse(fechaaux));
-						} catch (ParseException e1) {
-							new PanelMensaje("Error al cargar los datos", "Error", "error");
-							e1.printStackTrace();
+					int res = buscarNombres();
+					if (res != -1) {
+						Date fecha = fechaChooser1.getDate();
+						SimpleDateFormat d = new SimpleDateFormat("dd/MM/yyyy");
+						if (fecha == null) {
+							fecha = new Date();
+							String fechaaux = d.format(fecha);
+							try {
+								fechaChooser1.setDate(d.parse(fechaaux));
+							} catch (ParseException e1) {
+								new PanelMensaje("Error al cargar los datos", "Error", "error");
+								e1.printStackTrace();
+							}
 						}
-					}
-					fechaChooser1.requestFocusInWindow();
+						fechaChooser1.requestFocusInWindow();
+					} else
+						new PanelMensaje("Operario introducido no encontrado.", "Error en los datos", "error");
 				}
 			}
 		});
@@ -188,7 +191,7 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 			@Override
 			public void propertyChange(PropertyChangeEvent e) {
 				if ("date".equals(e.getPropertyName())) {
-					if (fechaChooser2.getDate() != null) {
+					if (fechaChooser2.getDate() != null && fechaChooser1.getDate() != null) {
 						vaciarTabla();
 						actualizarTabla();
 
@@ -201,7 +204,7 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 			@Override
 			public void propertyChange(PropertyChangeEvent e) {
 				if ("date".equals(e.getPropertyName())) {
-					if (fechaChooser2.getDate() != null) {
+					if (fechaChooser2.getDate() != null && fechaChooser1.getDate() != null) {
 						vaciarTabla();
 						actualizarTabla();
 					}
@@ -210,7 +213,6 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 			}
 		});
 
-		
 		xConcep.getDocument().addDocumentListener(new DocumentListener() {
 			public void changedUpdate(DocumentEvent e) {
 				warn();
@@ -251,7 +253,7 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 					int res = buscarNombres();
 					if (res == -2)
 						new PanelMensaje("Trabajo introducido no encontrado.", "Error en los datos", "error");
-					
+
 				}
 			}
 		});
@@ -278,7 +280,6 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 						try {
 							fechaChooser2.setDate(d.parse(fechaaux));
 						} catch (ParseException e1) {
-							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
 					}
@@ -309,7 +310,6 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 						try {
 							fechaChooser2.setDate(d.parse(fechaaux));
 						} catch (ParseException e1) {
-							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
 					}
@@ -321,7 +321,7 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 				}
 			}
 		});
-		
+
 		xTraba.addKeyListener(new KeyListener() {
 
 			@Override
@@ -335,11 +335,15 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					xFecha.requestFocusInWindow();
+					int res = buscarNombres();
+					if (res != -2)
+						xFecha.requestFocusInWindow();
+					else
+						new PanelMensaje("Trabajo introducido no encontrado.", "Error en los datos", "error");
 				}
 			}
 		});
-		
+
 		xFecha.getDateEditor().getUiComponent().addKeyListener(new java.awt.event.KeyListener() {
 			@Override
 			public void keyTyped(java.awt.event.KeyEvent e) {
@@ -359,7 +363,7 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 				}
 			}
 		});
-		
+
 		xConcep.addKeyListener(new KeyListener() {
 
 			@Override
@@ -373,15 +377,19 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					if (xCant.getText().isEmpty()) {
-						xCant.setText("1");
+					int res = buscarNombres();
+					if (res != -3) {
+						if (xCant.getText().isEmpty()) {
+							xCant.setText("1");
+						}
 						xCant.requestFocus();
 						xCant.selectAll();
-					}
+					} else
+						new PanelMensaje("Concepto introducido no encontrado.", "Error en los datos", "error");
 				}
 			}
 		});
-		
+
 		xCant.addKeyListener(new KeyListener() {
 
 			@Override
@@ -431,7 +439,6 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 				actualizarTexto();
 			}
 		});
-		
 
 		confirmarButton = new JButton("Confirmar");
 		confirmarButton.setMargin(new Insets(2, 28, 2, 28));
@@ -510,7 +517,7 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 			if (rs.first())
 				return rs.getString("NOMBRE");
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			new PanelMensaje("Error en el acceso a la base de datos.\n"+e, "Error en los datos", "error");
 			e.printStackTrace();
 		}
 		return "";
@@ -523,7 +530,7 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 			if (rs.first())
 				return rs.getString("DENOMINACION");
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			new PanelMensaje("Error en el acceso a la base de datos.\n"+e, "Error en los datos", "error");
 			e.printStackTrace();
 		}
 		return "";
@@ -536,7 +543,7 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 			if (rs.first())
 				return rs.getString("DESCRIPCION");
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			new PanelMensaje("Error en el acceso a la base de datos.\n"+e, "Error en los datos", "error");
 			e.printStackTrace();
 		}
 		return "";
@@ -558,7 +565,6 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 			try {
 				xFecha.setDate(d.parse(fecha));
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			xDescrip.setText(nombre);
@@ -578,7 +584,7 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 			try {
 				xFecha.setDate(d.parse(fechaaux));
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
+				new PanelMensaje("Error al leer fecha.\n" + e, "Error", "error");
 				e.printStackTrace();
 			}
 
@@ -609,7 +615,7 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 			}
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			new PanelMensaje("Error en el acceso a la base de datos.\n"+e, "Error en los datos", "error");
 			e.printStackTrace();
 		}
 	}
@@ -628,18 +634,20 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 				return -2;
 			} else
 				xNombreTrabajo.setText(trabajo);
-		}
+		} else
+			return -2;
 		if (!xConcep.getText().isEmpty()) {
 			String concepto = buscarConcepto(xConcep.getText());
 			if (concepto.isEmpty()) {
 				return -3;
 			} else
 				xDescrip.setText(concepto);
-		}
+		} else
+			return -3;
 
 		return 0;
 	}
-	
+
 	public void activarFoco() {
 		textoOperario.requestFocus();
 		textoOperario.selectAll();
@@ -649,6 +657,7 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 		// Guardamos en operarios
 		String str = "MOVIMIENTO='" + xMov.getText() + "'";
 		if (!xMov.getText().isEmpty())
+		{
 			try {
 				SimpleDateFormat d = new SimpleDateFormat("dd/MM/yyyy");
 				ResultSet rs = controlador.setStatementSelect("CTCMOV", str);
@@ -714,12 +723,15 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 				}
 
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
+				new PanelMensaje("Error en el acceso a la base de datos.\n"+e, "Error en los datos", "error");
 				e.printStackTrace();
 				return -1;
 			}
-		else
+		}
+		else{
+			new PanelMensaje("Identificador de movimiento no válido.", "Error en los datos", "error");
 			return -1;
+		}
 		return 0;
 	}
 
@@ -766,7 +778,7 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 			else
 				return -1;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			new PanelMensaje("Error en el acceso a la base de datos.\n"+e, "Error en los datos", "error");
 			e.printStackTrace();
 		}
 		return -1;
@@ -798,7 +810,7 @@ public class PanelMovConcep extends JPanel implements ActionListener {
 				try {
 					xFecha.setDate(d.parse(fechaaux));
 				} catch (ParseException e2) {
-					// TODO Auto-generated catch block
+					new PanelMensaje("Error en el acceso a la base de datos.\n"+e2, "Error en los datos", "error");
 					e2.printStackTrace();
 				}
 			}
