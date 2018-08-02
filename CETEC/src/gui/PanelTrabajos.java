@@ -162,6 +162,11 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 
 			@Override
 			public void keyTyped(KeyEvent e) {
+				int n=textoCodigo.getSelectionStart()-textoCodigo.getSelectionEnd();
+				if(textoCodigo.getText().length() == 4 && n==0)
+				{
+					 e.consume(); 
+				}
 			}
 
 			@Override
@@ -278,6 +283,11 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 
 			@Override
 			public void keyTyped(KeyEvent e) {
+				int n=textoTrabajador.getSelectionStart()-textoTrabajador.getSelectionEnd();
+				if(textoTrabajador.getText().length() == 4 && n==0)
+				{
+					 e.consume(); 
+				}
 			}
 
 			@Override
@@ -609,7 +619,6 @@ public class PanelTrabajos extends JPanel implements ActionListener {
 							String fecha = d.format(fechaChooser1.getDate());
 							if (validarFecha(fecha)) {
 								if (isNumeric(textoPresup.getText())) {
-									System.out.println(fecha);
 									controlador.setStatementUpdate("CTCTRB", str1, str2, d.parse(fecha));
 									new PanelMensaje("Cambios guardados con éxito.", "Confirmación de cambios", "info");
 									return true;

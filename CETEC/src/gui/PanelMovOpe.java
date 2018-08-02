@@ -130,6 +130,10 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 
 			@Override
 			public void keyTyped(KeyEvent e) {
+				int n = textoOperario.getSelectionStart() - textoOperario.getSelectionEnd();
+				if (textoOperario.getText().length() == 4 && n == 0) {
+					e.consume();
+				}
 			}
 
 			@Override
@@ -299,6 +303,10 @@ public class PanelMovOpe extends JPanel implements ActionListener {
 
 			@Override
 			public void keyTyped(KeyEvent e) {
+				int n = xTraba.getSelectionStart() - xTraba.getSelectionEnd();
+				if (xTraba.getText().length() == 4 && n == 0) {
+					e.consume();
+				}
 			}
 
 			@Override

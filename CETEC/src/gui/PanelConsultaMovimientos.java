@@ -44,7 +44,7 @@ import controlador.Controlador;
 import utilidades.PDFConsultaMovimientos;
 
 @SuppressWarnings("serial")
-public class PanelConsultaMovimientos extends JPanel implements ActionListener, KeyListener{
+public class PanelConsultaMovimientos extends JPanel implements ActionListener{
 
 	private VentanaPrincipal window;
 	private Controlador controlador;
@@ -260,11 +260,79 @@ public class PanelConsultaMovimientos extends JPanel implements ActionListener, 
 				  }
 				});
 		
-		textoTrabajo.addKeyListener(this);
-		textoOperarioIni.addKeyListener(this);
-		textoOperarioFin.addKeyListener(this);
-		fechaChooser2.getDateEditor().getUiComponent().addKeyListener(this);
-		fechaChooser1.getDateEditor().getUiComponent().addKeyListener(this);
+		Listener lis= new Listener();
+		textoTrabajo.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+
+				int n = textoTrabajo.getSelectionStart() - textoTrabajo.getSelectionEnd();
+				if (textoTrabajo.getText().length() == 4 && n == 0) {
+					e.consume();
+				}
+
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode()==KeyEvent.VK_ENTER){
+					inicializarDatos();
+				}
+			}
+		});
+		textoOperarioIni.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+				if(e.getKeyCode()==KeyEvent.VK_ENTER){
+					inicializarDatos();
+				}
+				else {
+					int n = textoOperarioIni.getSelectionStart() - textoOperarioIni.getSelectionEnd();
+					if (textoOperarioIni.getText().length() == 4 && n == 0) {
+						e.consume();
+					}
+				}
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+			}
+		});
+		textoOperarioFin.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+				if(e.getKeyCode()==KeyEvent.VK_ENTER){
+					inicializarDatos();
+				}
+				else {
+					int n = textoOperarioFin.getSelectionStart() - textoOperarioFin.getSelectionEnd();
+					if (textoOperarioFin.getText().length() == 4 && n == 0) {
+						e.consume();
+					}
+				}
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+			}
+		});
+		
+		fechaChooser2.getDateEditor().getUiComponent().addKeyListener(lis);
+		fechaChooser1.getDateEditor().getUiComponent().addKeyListener(lis);
 		fechaChooser1.getDateEditor().addPropertyChangeListener(
 			    new PropertyChangeListener() {
 					@Override
@@ -648,26 +716,30 @@ public class PanelConsultaMovimientos extends JPanel implements ActionListener, 
 			modelo.removeRow(0);
 	}
 
-	@Override
-	public void keyPressed(KeyEvent e) {
-		if(e.getKeyCode()==KeyEvent.VK_ENTER){
-			inicializarDatos();
-		}
-		
-	}
-
-	@Override
-	public void keyReleased(KeyEvent arg0) {
-	}
-
-	@Override
-	public void keyTyped(KeyEvent arg0) {
-	}
+	
 	
 		
 
-		
+	public class Listener implements KeyListener{
+		@Override
+		public void keyPressed(KeyEvent e) {
+			if(e.getKeyCode()==KeyEvent.VK_ENTER){
+				inicializarDatos();
+			}
+			
+		}
+
+		@Override
+		public void keyReleased(KeyEvent arg0) {
+		}
+
+		@Override
+		public void keyTyped(KeyEvent arg0) {
+		}
+	}	
 		
 		
 }
+
+
 

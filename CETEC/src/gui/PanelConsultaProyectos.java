@@ -14,9 +14,13 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -29,8 +33,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.TableColumn;
 
 import com.toedter.calendar.JDateChooser;
@@ -40,21 +47,27 @@ import utilidades.ExcelConsultaProyectos;
 import utilidades.PDFConsultaProyectos;
 
 @SuppressWarnings("serial")
-public class PanelConsultaProyectos extends JPanel implements ActionListener, KeyListener {
+public class PanelConsultaProyectos extends JPanel implements ActionListener {
 
 	private VentanaPrincipal window;
 	private Controlador controlador;
 	private JButton imprimirButton;
 	private JButton excelButton;
 	private JButton cancelarButton;
+	private JButton eliminarListaButton;
 	private JDateChooser fechaChooser1;
 	private JDateChooser fechaChooser2;
 	private JTable tabla;
 	private ModeloTablaProyectos modelo;
 	private JScrollPane scrollPane;
 	private LinkedList<String> registro;
+	private LinkedList<String> registroAdd=new LinkedList<>();
 	private JComboBox<String> comboClave;
 	private JComboBox<String> comboEstatus;
+	private JTextField textoTrabajoIni;
+	private JTextField textoTrabajoFin;
+	private JTextField textoaddTrabajo;
+	Map<String, Float> mapaPrecios;
 
 	private void fixedSize(JComponent c, int x, int y) {
 		c.setMinimumSize(new Dimension(x, y));
@@ -65,14 +78,17 @@ public class PanelConsultaProyectos extends JPanel implements ActionListener, Ke
 	public PanelConsultaProyectos(VentanaPrincipal w) {
 		this.window = w;
 		registro = new LinkedList<String>();
-		controlador=Controlador.getUnicaInstancia();
+		controlador = Controlador.getUnicaInstancia();
 
 		JLabel rotuloFecha1 = new JLabel("Desde Fecha: ", SwingConstants.CENTER);
 		JLabel rotuloFecha2 = new JLabel("Hasta Fecha: ", SwingConstants.CENTER);
 		JLabel rotuloEstatus = new JLabel("Estatus: ", SwingConstants.CENTER);
 		JLabel rotuloClave = new JLabel("Tipo Trabajo: ", SwingConstants.CENTER);
-		
-		comboClave = new  JComboBox<>();
+		JLabel rotuloTrabajoIni = new JLabel("Desde Trabajo: ", SwingConstants.CENTER);
+		JLabel rotuloTrabajoFin = new JLabel("Hasta Trabajo: ", SwingConstants.CENTER);
+		JLabel rotuloaddTrabajo = new JLabel("Añadir Trabajo: ", SwingConstants.CENTER);
+
+		comboClave = new JComboBox<>();
 		fixedSize(comboClave, 50, 24);
 		comboClave.setSelectedIndex(-1);
 		comboClave.setEditable(false);
@@ -81,15 +97,15 @@ public class PanelConsultaProyectos extends JPanel implements ActionListener, Ke
 		comboClave.addItem("DO");
 		comboClave.addItem("");
 		comboClave.setSelectedItem("");
-		comboClave.addActionListener (new ActionListener () {
-		    public void actionPerformed(ActionEvent e) {
-		        if(fechaChooser1.getDate()!=null && fechaChooser2.getDate()!=null){
-		        	vaciarTabla();
-		        	actualizarTabla();
-		        }
-		    }
+		comboClave.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (fechaChooser1.getDate() != null && fechaChooser2.getDate() != null) {
+					vaciarTabla();
+					actualizarTabla();
+				}
+			}
 		});
-		
+
 		comboEstatus = new JComboBox<>();
 		fixedSize(comboEstatus, 65, 24);
 		comboEstatus.setSelectedIndex(-1);
@@ -98,51 +114,116 @@ public class PanelConsultaProyectos extends JPanel implements ActionListener, Ke
 		comboEstatus.addItem("Curso");
 		comboEstatus.addItem("");
 		comboEstatus.setSelectedItem("");
-		comboEstatus.addActionListener (new ActionListener () {
-		    public void actionPerformed(ActionEvent e) {
-		        if(fechaChooser1.getDate()!=null && fechaChooser2.getDate()!=null){
-		        	vaciarTabla();
-		        	actualizarTabla();
-		        }
-		    }
+		comboEstatus.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (fechaChooser1.getDate() != null && fechaChooser2.getDate() != null) {
+					vaciarTabla();
+					actualizarTabla();
+				}
+			}
 		});
-		
+
 		fechaChooser1 = new JDateChooser();
 		fechaChooser1.setDateFormatString("dd/MM/yyyy");
-		fixedSize(fechaChooser1, 100, 30);
+		fixedSize(fechaChooser1, 100, 24);
 		fechaChooser2 = new JDateChooser();
 		fechaChooser2.setDateFormatString("dd/MM/yyyy");
-		fixedSize(fechaChooser2, 100, 30);
-		fechaChooser1.getDateEditor().addPropertyChangeListener(
-			    new PropertyChangeListener() {
-					@Override
-					public void propertyChange(PropertyChangeEvent e) {
-						if ("date".equals(e.getPropertyName())) {
-							if(fechaChooser2.getDate()!=null){
-					        	vaciarTabla();
-					        	actualizarTabla();
-					        }
-			            }
-						
+		fixedSize(fechaChooser2, 100, 24);
+		fechaChooser1.getDateEditor().addPropertyChangeListener(new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent e) {
+				if ("date".equals(e.getPropertyName())) {
+					if (fechaChooser2.getDate() != null) {
+						vaciarTabla();
+						actualizarTabla();
 					}
-			    });
-		fechaChooser2.getDateEditor().addPropertyChangeListener(
-			    new PropertyChangeListener() {
-					@Override
-					public void propertyChange(PropertyChangeEvent e) {
-						if ("date".equals(e.getPropertyName())) {
-							if(fechaChooser1.getDate()!=null){
-					        	vaciarTabla();
-					        	actualizarTabla();
-					        }
-			            }
-						
+				}
+
+			}
+		});
+		fechaChooser2.getDateEditor().addPropertyChangeListener(new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent e) {
+				if ("date".equals(e.getPropertyName())) {
+					if (fechaChooser1.getDate() != null) {
+						vaciarTabla();
+						actualizarTabla();
 					}
-			    });
+				}
 
-		fechaChooser2.getDateEditor().getUiComponent().addKeyListener(this);
-		fechaChooser1.getDateEditor().getUiComponent().addKeyListener(this);
+			}
+		});
+		Listener lis= new Listener();
+		fechaChooser2.getDateEditor().getUiComponent().addKeyListener(lis);
+		fechaChooser1.getDateEditor().getUiComponent().addKeyListener(lis);
 
+		textoTrabajoIni = new JTextField("");
+		fixedSize(textoTrabajoIni, 50, 24);
+		textoTrabajoFin = new JTextField("");
+		fixedSize(textoTrabajoFin, 50, 24);
+		textoaddTrabajo = new JTextField("");
+		fixedSize(textoaddTrabajo, 50, 24);
+		
+		textoaddTrabajo.getDocument().addDocumentListener(new DocumentListener() {
+			public void changedUpdate(DocumentEvent e) {
+				warn();
+			}
+
+			public void removeUpdate(DocumentEvent e) {
+				warn();
+			}
+
+			public void insertUpdate(DocumentEvent e) {
+				warn();
+			}
+
+			public void warn() {
+				if (textoaddTrabajo.getText().length() == 4) {
+					insertarTrabajo();
+				}
+			}
+		});
+		textoTrabajoFin.getDocument().addDocumentListener(new DocumentListener() {
+			public void changedUpdate(DocumentEvent e) {
+				warn();
+			}
+
+			public void removeUpdate(DocumentEvent e) {
+				warn();
+			}
+
+			public void insertUpdate(DocumentEvent e) {
+				warn();
+			}
+
+			public void warn() {
+				if (textoTrabajoFin.getText().length() == 4 && fechaChooser1.getDate() != null
+						&& fechaChooser2.getDate() != null && !textoTrabajoIni.getText().isEmpty()) {
+					vaciarTabla();
+					actualizarTabla();
+				}
+			}
+		});
+		textoTrabajoIni.getDocument().addDocumentListener(new DocumentListener() {
+			  public void changedUpdate(DocumentEvent e) {
+				    warn();
+				  }
+				  public void removeUpdate(DocumentEvent e) {
+				    warn();
+				  }
+				  public void insertUpdate(DocumentEvent e) {
+				    warn();
+				  }
+
+				  public void warn() {
+				     if(textoTrabajoIni.getText().length()==4 && fechaChooser1.getDate()!=null && fechaChooser2.getDate()!=null  && !textoTrabajoFin.getText().isEmpty()){
+				    	vaciarTabla();
+				     	actualizarTabla();
+				  }
+				  }
+				});
+		
+		
 		modelo = new ModeloTablaProyectos();
 		tabla = new JTable(modelo);
 		tabla.setPreferredScrollableViewportSize(new Dimension(500, 70));
@@ -175,17 +256,94 @@ public class PanelConsultaProyectos extends JPanel implements ActionListener, Ke
 		cancelarButton = new JButton("Volver");
 		cancelarButton.setMargin(new Insets(2, 28, 2, 28));
 		cancelarButton.addActionListener(this);
+		eliminarListaButton = new JButton("Limpiar Tabla");
+		eliminarListaButton.setMargin(new Insets(2, 28, 2, 28));
+		eliminarListaButton.addActionListener(this);
 		excelButton = new JButton("Excel");
 		excelButton.setMargin(new Insets(2, 28, 2, 28));
 		excelButton.addActionListener(this);
+		
+		textoaddTrabajo.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+
+				int n = textoaddTrabajo.getSelectionStart() - textoaddTrabajo.getSelectionEnd();
+				if (textoaddTrabajo.getText().length() == 4 && n == 0) {
+					e.consume();
+				}
+
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+			}
+		});
+		
+		textoTrabajoIni.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+
+				int n = textoTrabajoIni.getSelectionStart() - textoTrabajoIni.getSelectionEnd();
+				if (textoTrabajoIni.getText().length() == 4 && n == 0) {
+					e.consume();
+				}
+
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode()==KeyEvent.VK_ENTER){
+					inicializarDatos();
+				}
+			}
+		});
+		
+		textoTrabajoFin.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+
+				int n = textoTrabajoFin.getSelectionStart() - textoTrabajoFin.getSelectionEnd();
+				if (textoTrabajoFin.getText().length() == 4 && n == 0) {
+					e.consume();
+				}
+
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode()==KeyEvent.VK_ENTER){
+					inicializarDatos();
+				}
+			}
+		});
 
 		JPanel panelCentral = new JPanel();
 		JPanel panel1 = new JPanel();
 		JPanel panel2 = new JPanel();
 		JPanel panel3 = new JPanel();
+		JPanel panel4 = new JPanel();
+		
 
 		panel1.setLayout(new BoxLayout(panel1, BoxLayout.X_AXIS));
 		panel1.setAlignmentX(RIGHT_ALIGNMENT);
+		panel1.add(rotuloTrabajoIni);
+		panel1.add(textoTrabajoIni);
+		panel1.add(Box.createRigidArea(new Dimension(25, 30)));
 		panel1.add(rotuloClave);
 		panel1.add(Box.createRigidArea(new Dimension(5, 20)));
 		panel1.add(comboClave);
@@ -195,31 +353,43 @@ public class PanelConsultaProyectos extends JPanel implements ActionListener, Ke
 
 		panel2.setLayout(new BoxLayout(panel2, BoxLayout.X_AXIS));
 		panel2.setAlignmentX(RIGHT_ALIGNMENT);
+		panel2.add(rotuloTrabajoFin);
+		panel2.add(textoTrabajoFin);
+		panel2.add(Box.createRigidArea(new Dimension(26, 30)));
 		panel2.add(rotuloEstatus);
 		panel2.add(Box.createRigidArea(new Dimension(16, 20)));
 		panel2.add(comboEstatus);
 		panel2.add(Box.createRigidArea(new Dimension(53, 20)));
 		panel2.add(rotuloFecha2);
 		panel2.add(fechaChooser2);
-
+		
 		panel3.setLayout(new BoxLayout(panel3, BoxLayout.X_AXIS));
 		panel3.setAlignmentX(RIGHT_ALIGNMENT);
-		
-		panel3.add(excelButton);
-		panel3.add(Box.createRigidArea(new Dimension(50, 15)));
-		panel3.add(imprimirButton);
-		panel3.add(Box.createRigidArea(new Dimension(50, 15)));
-		panel3.add(cancelarButton);
-		panel3.add(Box.createRigidArea(new Dimension(160, 15)));
+		panel3.add(rotuloaddTrabajo);
+		panel3.add(textoaddTrabajo);
+		panel3.add(Box.createRigidArea(new Dimension(385, 25)));
+
+		panel4.setLayout(new BoxLayout(panel4, BoxLayout.X_AXIS));
+		panel4.setAlignmentX(RIGHT_ALIGNMENT);
+
+		panel4.add(excelButton);
+		panel4.add(Box.createRigidArea(new Dimension(50, 15)));
+		panel4.add(imprimirButton);
+		panel4.add(Box.createRigidArea(new Dimension(50, 15)));
+		panel4.add(cancelarButton);
+		panel4.add(Box.createRigidArea(new Dimension(50, 15)));
+		panel4.add(eliminarListaButton);
+		panel4.add(Box.createRigidArea(new Dimension(50, 15)));
 
 		panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.Y_AXIS));
 		panelCentral.add(Box.createRigidArea(new Dimension(25, 25)));
 		panelCentral.add(panel1);
 		panelCentral.add(panel2);
+		panelCentral.add(panel3);
 		panelCentral.add(Box.createRigidArea(new Dimension(25, 15)));
 		panelCentral.add(scrollPane);
 		panelCentral.add(Box.createRigidArea(new Dimension(25, 15)));
-		panelCentral.add(panel3);
+		panelCentral.add(panel4);
 
 		JPanel pNorte = new JPanel();
 		JPanel pOeste = new JPanel();
@@ -233,10 +403,10 @@ public class PanelConsultaProyectos extends JPanel implements ActionListener, Ke
 
 		setLayout(new BorderLayout(10, 10));
 		add(pNorte, BorderLayout.NORTH);
-		JLabel imagen=new JLabel();
+		JLabel imagen = new JLabel();
 		imagen.setMaximumSize(new Dimension(80, 74));
-		String nombre="Iconos/logoMini.jpg";
-		String nombre_im=System.getProperty("user.dir")+"\\"+nombre;
+		String nombre = "Iconos/logoMini.jpg";
+		String nombre_im = System.getProperty("user.dir") + "\\" + nombre;
 		imagen.setIcon(new ImageIcon(nombre_im));
 		pOeste.setLayout(new BoxLayout(pOeste, BoxLayout.Y_AXIS));
 		pOeste.setAlignmentY(Component.LEFT_ALIGNMENT);
@@ -246,6 +416,7 @@ public class PanelConsultaProyectos extends JPanel implements ActionListener, Ke
 		add(Box.createRigidArea(new Dimension(50, 50)), BorderLayout.EAST);
 		add(Box.createRigidArea(new Dimension(50, 50)), BorderLayout.SOUTH);
 		add(panelCentral, BorderLayout.CENTER);
+
 	}
 
 	public void inicializarDatos() {
@@ -262,45 +433,148 @@ public class PanelConsultaProyectos extends JPanel implements ActionListener, Ke
 			fecha = new Date();
 			fechaChooser2.setDate(fecha);
 		}
+		String codigo=textoTrabajoIni.getText();
+		if(codigo.isEmpty())
+		{
+			DecimalFormat format = new DecimalFormat("0000");
+			codigo=format.format(controlador.getIdentificadorTRB()-26);
+			textoTrabajoIni.setText(codigo);
+		}
+		codigo=textoTrabajoFin.getText();
+		if(codigo.isEmpty())
+		{
+			DecimalFormat format = new DecimalFormat("0000");
+			codigo=format.format(controlador.getIdentificadorTRB()-1);
+			textoTrabajoFin.setText(codigo);
+		}
 		vaciarTabla();
 		actualizarTabla();
 
 	}
+	public void insertarTrabajo() {
+		String trabajo=textoaddTrabajo.getText();
+		if (!registro.contains(trabajo)) {
+			int n =modelo.getRowCount();
+			modelo.setRowCount(n-1);
+			registroAdd.add(trabajo);
+			registro.add(trabajo);
+			n = añadirLinea(trabajo, n);
+			incluirTotal(n);
+		}
+		
+	}
 
 	public void actualizarTabla() {
-		String str1 = "FECHA>=? AND FECHA<=?";
-		try {
-			ResultSet rs = controlador.setStatementSelect("CTCMOV", str1, fechaChooser1.getDate(),
-					fechaChooser2.getDate());
-			String trabajo;
-			int n = 1;
-			while (rs.next()) {
-				trabajo = rs.getString("TRABAJO");
-				if (!registro.contains(trabajo)) {
-					registro.add(trabajo);
-					n=añadirLinea(trabajo,n);
-					
+			String str1 = "FECHA>=? AND FECHA<=? AND TRABAJO>='"+textoTrabajoIni.getText()+"' AND TRABAJO<='"+textoTrabajoFin.getText()+"'";
+			
+			try {
+				ResultSet rs = controlador.setStatementSelect("CTCMOV", str1, fechaChooser1.getDate(),
+						fechaChooser2.getDate());
+				String trabajo;
+				int n = 1;
+				registro = new LinkedList<>();
+				while (rs.next()) {
+					trabajo = rs.getString("TRABAJO");
+					if (!registro.contains(trabajo)) {
+						registro.add(trabajo);
+						n = añadirLinea(trabajo, n);
+					}
 				}
+				if(!registroAdd.isEmpty()){
+					Iterator<String> it = registroAdd.iterator();
+					while (it.hasNext()) {
+						trabajo=it.next();
+						if (!registro.contains(trabajo)) {
+							registro.add(trabajo);
+							n = añadirLinea(trabajo, n);
+						}
+					}
+				}
+				
+				incluirTotal(n);
+				
+			} catch (SQLException e) {
+				new PanelMensaje("Error en el acceso a la base de datos.\n" + e, "Error en los datos", "error");
+				e.printStackTrace();
+				
 			}
-			registro = new LinkedList<>();
-			incluirTotal(n);
+			
+		}
 
-		} catch (SQLException e) {
-			new PanelMensaje("Error en el acceso a la base de datos.\n"+e, "Error en los datos", "error");
-			e.printStackTrace();
+	public void incluirTotal(int n) {
+		float costes = 0, presup = 0;
+		;
+		for (int i = 0; i < n - 1; i++) {
+			costes += Float.parseFloat(modelo.getCostesSeleccionado(i).replace(".", "").replace(",", "."));
+			presup += Float.parseFloat(modelo.getPresupSeleccionado(i).replace(".", "").replace(",", "."));
 		}
-	}
-	
-	public void incluirTotal(int n){
-		float costes=0,presup=0;;
-		for (int i = 0; i < n-1; i++) {
-			costes+=Float.parseFloat(modelo.getCostesSeleccionado(i).replace(".", "").replace(",", "."));
-			presup+=Float.parseFloat(modelo.getPresupSeleccionado(i).replace(".", "").replace(",", "."));
-		}
-		System.out.println(n);
 		modelo.addFila(n, "0000", "-", "-", "-", "Totales:", presup, costes);
 	}
-	
+
+	public float buscarPrecio(String operario, Date fecha) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(fecha);
+		String clave = operario + calendar.get(Calendar.YEAR);
+		if (!mapaPrecios.containsKey(clave)) {
+			String str = "AÑO='" + Integer.toString(calendar.get(Calendar.YEAR)) + "' AND OPERARIO='" + operario + "'";
+			try {
+				ResultSet rs = controlador.setStatementSelect("CTCPRE", str);
+				if (rs.first()) {
+					mapaPrecios.put(clave, rs.getFloat("PRECIO"));
+					return rs.getFloat("PRECIO");
+				} else
+					return -1;
+			} catch (SQLException e) {
+				new PanelMensaje("Error en el acceso a la base de datos.\n" + e, "Error en los datos", "error");
+				e.printStackTrace();
+			}
+		} else {
+			return mapaPrecios.get(clave);
+		}
+
+		return -1;
+	}
+
+	public float calcularCoste(String str) {
+		String operario, concepto;
+		int horas;
+		float precio, importe, totalPer = 0, totalOfi = 0;
+		Date fecha;
+		ResultSet rs;
+		try {
+			rs = controlador.setStatementSelect("CTCMOV", str);
+			mapaPrecios = new HashMap<String, Float>();
+			while (rs.next()) {
+				concepto = rs.getString("CONCEPTO");
+				operario = rs.getString("OPERARIO");
+				fecha = rs.getDate("FECHA");
+				horas = rs.getInt("HORAS");
+				if (concepto == null) {
+					if (fecha != null) {
+						precio = buscarPrecio(operario, fecha);
+						importe = precio * horas;
+						totalPer += importe;
+					}
+				} else {
+					if (concepto.isEmpty()) {
+						precio = buscarPrecio(operario, fecha);
+						importe = precio * horas;
+						totalPer += importe;
+					} else {
+						precio = rs.getFloat("PRECIO");
+						importe = rs.getFloat("IMPORTE");
+						totalOfi += importe;
+					}
+				}
+			}
+			return totalOfi + totalPer;
+		} catch (SQLException e) {
+			new PanelMensaje("Error en el acceso a la base de datos.\n" + e, "Error en los datos", "error");
+			e.printStackTrace();
+		}
+		return -1;
+	}
+
 	public int añadirLinea(String trabajo, int n) {
 		String str1 = "TRABAJO='" + trabajo + "'";
 		String nombre = "", tipo = "", estatus = "", cliente = "";
@@ -315,30 +589,27 @@ public class PanelConsultaProyectos extends JPanel implements ActionListener, Ke
 				estatus = rs.getString("ESTATUS");
 				presup = Float.parseFloat(rs.getString("PRESUPUESTO"));
 				cliente = rs.getString("CLIENTE");
-			}
-			if (filtrar(tipo, estatus)) {
-				rs = controlador.setStatementSelect("CTCMOV", str1);
-				while (rs.next()) {
-					importe += Float.parseFloat(rs.getString("IMPORTE"));
+				if (filtrar(tipo, estatus)) {
+					importe = calcularCoste(str1);
+					modelo.addFila(n, trabajo, nombre, tipo, estatus, cliente, presup, importe);
+					n++;
 				}
-				
-				modelo.addFila(n, trabajo, nombre, tipo, estatus, cliente, presup, importe);
-				n++;
 			}
+			
 			return n;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return 0;
 		}
 	}
-	
-	public boolean filtrar(String tipo, String estatus){
+
+	public boolean filtrar(String tipo, String estatus) {
 		String filtroTipo = (String) comboClave.getSelectedItem();
 		String filtroEstatus = (String) comboEstatus.getSelectedItem();
-		if(tipo==null)
-			tipo="";
-		if(estatus==null)
-			estatus="";
+		if (tipo == null)
+			tipo = "";
+		if (estatus == null)
+			estatus = "";
 		if (filtroEstatus.isEmpty() && filtroTipo.isEmpty())
 			return true;
 		else {
@@ -349,7 +620,7 @@ public class PanelConsultaProyectos extends JPanel implements ActionListener, Ke
 		}
 		return true;
 	}
-	
+
 	public String buscarTrabajo(String codigo) {
 		String str = "NRO_TRABAJO='" + codigo + "'";
 		try {
@@ -357,27 +628,27 @@ public class PanelConsultaProyectos extends JPanel implements ActionListener, Ke
 			if (rs.first())
 				return rs.getString("DENOMINACION");
 		} catch (SQLException e) {
-			new PanelMensaje("Error en el acceso a la base de datos.\n"+e, "Error en los datos", "error");
+			new PanelMensaje("Error en el acceso a la base de datos.\n" + e, "Error en los datos", "error");
 			e.printStackTrace();
 		}
 		return "";
 	}
-	
-	public boolean comprobarDatos( Date fecha1, Date fecha2) {
-		
-		if (fecha1==null) {
+
+	public boolean comprobarDatos(Date fecha1, Date fecha2) {
+
+		if (fecha1 == null) {
 			new PanelMensaje("Fecha inicial no válida.", "Error en los datos", "error");
 			return false;
 		}
-		if (fecha2==null) {
+		if (fecha2 == null) {
 			new PanelMensaje("Fecha final no válida.", "Error en los datos", "error");
 			return false;
 		}
 		return true;
 	}
-	
+
 	public void activarFoco() {
-		fechaChooser1.requestFocusInWindow();
+		textoTrabajoIni.requestFocusInWindow();
 	}
 
 	@Override
@@ -394,6 +665,10 @@ public class PanelConsultaProyectos extends JPanel implements ActionListener, Ke
 			}
 		} else if (e.getSource() == cancelarButton) {
 			window.setPanelInicial();
+		}
+		if (e.getSource() == eliminarListaButton) {
+			modelo.setRowCount(0);
+			registroAdd=new LinkedList<>();
 		}
 
 	}
@@ -415,20 +690,21 @@ public class PanelConsultaProyectos extends JPanel implements ActionListener, Ke
 			modelo.removeRow(0);
 	}
 
-	@Override
-	public void keyPressed(KeyEvent e) {
-		if(e.getKeyCode()==KeyEvent.VK_ENTER){
-			inicializarDatos();
+	public class Listener implements KeyListener{
+		@Override
+		public void keyPressed(KeyEvent e) {
+			if(e.getKeyCode()==KeyEvent.VK_ENTER){
+				inicializarDatos();
+			}
+			
 		}
-		
 
-	}
+		@Override
+		public void keyReleased(KeyEvent arg0) {
+		}
 
-	@Override
-	public void keyReleased(KeyEvent arg0) {
-	}
-
-	@Override
-	public void keyTyped(KeyEvent arg0) {
-	}
+		@Override
+		public void keyTyped(KeyEvent arg0) {
+		}
+	}	
 }

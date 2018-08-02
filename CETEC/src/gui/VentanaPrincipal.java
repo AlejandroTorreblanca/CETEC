@@ -131,7 +131,7 @@ public class VentanaPrincipal extends JFrame {
 		Dimension tamPantalla = miPantalla.getScreenSize();
 		int alturaPantalla = tamPantalla.height;
 		int anchoPantalla = tamPantalla.width;
-		setSize(anchoPantalla, (int) (alturaPantalla-50 ));
+		setSize(anchoPantalla, alturaPantalla-40 );
 		setLocation(0, 0);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("CETEC");

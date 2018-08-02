@@ -126,6 +126,11 @@ public class PanelOperarios extends JPanel implements ActionListener {
 
 			@Override
 			public void keyTyped(KeyEvent e) {
+				int n=textoCodigo.getSelectionStart()-textoCodigo.getSelectionEnd();
+				if(textoCodigo.getText().length() == 4 && n==0)
+				{
+					 e.consume(); 
+				}
 			}
 
 			@Override

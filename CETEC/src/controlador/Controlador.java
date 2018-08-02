@@ -40,7 +40,7 @@ public class Controlador {
 			str = "SELECT * FROM " + str1 + " WHERE " + str2;
 
 		ResultSet rs;
-		System.out.println(str);
+		//System.out.println(
 		rs = this.con.ejecutarQuery(str);
 		return rs;
 	}
@@ -48,7 +48,7 @@ public class Controlador {
 	public ResultSet setStatementSelect(String str1, String str2, Date fechaIni, Date fechaFin) throws SQLException {
 		String str = "SELECT * FROM " + str1 + " WHERE " + str2;
 		ResultSet rs;
-		System.out.println(str);
+		//System.out.println(
 		rs = this.con.ejecutarQuery(str,fechaIni,fechaFin);
 		return rs;
 	}
@@ -59,8 +59,10 @@ public class Controlador {
 		try {
 			rs = this.con.ejecutarQuery(str);
 			if(rs.first()){
+				System.out.println(rs.getInt("C1"));
 				return rs.getInt("C1")+1;
 			}
+			
 		} catch (SQLException e) {
 			new PanelMensaje("Fallo al buscar el identificador del movimiento.\n"+e, "Error", "error");
 			e.printStackTrace();
@@ -103,28 +105,28 @@ public class Controlador {
 	
 	public void setStatementInsert(String str1, String str2, String str3) throws SQLException {
 		String str = "INSERT INTO " + str1 + " " + str2 + " VALUES " + str3;
-		System.out.println(str);
+		//System.out.println(
 		this.con.ejecutarUpdate(str);
 
 	}
 
 	public void setStatementInsert(String str1, String str2, String str3, Date fecha) throws SQLException {
 		String str = "INSERT INTO " + str1 + " " + str2 + " VALUES " + str3;
-		System.out.println(str);
+		//System.out.println(
 		this.con.ejecutarUpdate(str, fecha);
 
 	}
 
 	public void setStatementUpdate(String str1, String str2, String str3) throws SQLException {
 		String str = "UPDATE " + str1 + " SET " + str2 + " WHERE " + str3;
-		System.out.println(str);
+		//System.out.println(
 		this.con.ejecutarUpdate(str);
 
 	}
 
 	public void setStatementUpdate(String str1, String str2, String str3, Date fecha) throws SQLException {
 		String str = "UPDATE " + str1 + " SET " + str2 + " WHERE " + str3;
-		System.out.println(str);
+		//System.out.println(
 		this.con.ejecutarUpdate(str, fecha);
 
 	}
